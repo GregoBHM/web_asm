@@ -1,0 +1,47 @@
+.header {
+    background-color: #002147; 
+    padding: 10px 30px;
+    border-bottom: 3px solid #ffcc00; 
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.logo img {
+    height: 60px;
+}
+
+.menu {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.menu a {
+    text-align: center;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.3s ease, transform 0.2s;
+}
+
+.menu a i {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.menu a:hover {
+    color: #ffcc00;
+    transform: scale(1.05);
+}
+
+.menu a.reserva {
+    color: #00BFFF;
+    font-weight: bold;
+}
