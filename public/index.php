@@ -1,41 +1,46 @@
 <?php
 session_start();
+require_once '../config/constants.php';
 
-if (isset($_SESSION['usuario_id']) && isset($_SESSION['rol'])) {
-    switch ($_SESSION['rol']) {
-        case 'administrador':
-            header('Location: ../views/dashboard/admin.php');
-            exit;
-        case 'docente':
-            header('Location: ../views/dashboard/docente.php');
-            exit;
-        case 'estudiante':
-            header('Location: ../views/dashboard/estudiante.php');
-            exit;
-        case 'visitante':
-        default:
-            header('Location: ../views/dashboard/visitante.php');
-            exit;
+$accion = $_GET['accion'] ?? 'inicio';
+
+// Mapeo de acciones del AuthController
+$authActions = [
+    'login' => 'mostrarLogin',
+    'procesar_login' => 'procesarLogin',
+    'registro' => 'mostrarRegistro',
+    'procesar_registro' => 'procesarRegistro',
+    'cerrar' => 'cerrarSesion'
+];
+
+if (array_key_exists($accion, $authActions)) {
+    require_once BASE_PATH . '/controllers/AuthController.php';
+    $auth = new AuthController();
+
+    if ($accion === 'cerrar') {
+        session_destroy();
+        header('Location: ' . BASE_URL . '/public/index.php');
+        exit;
     }
+
+    call_user_func([$auth, $authActions[$accion]]);
+    exit;
 }
-?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <?php include("../views/components/head.php"); ?>
-    <title>Sistema de Mentoría Académica</title>
-</head>
-<body>
+switch ($accion) {
+    case 'mentoria':
+    case 'mentores':
+    case 'alumnos':
+    case 'anuncios':
+    case 'faq':
+    case 'testimonios':
+        require_once BASE_PATH . '/controllers/HomeController.php';
+        (new HomeController)->mostrarSeccion($accion);
+        break;
 
-    <?php include("../views/components/header.php"); ?>
-
-    <main style="text-align: center; padding: 100px 20px;">
-        <h1>Bienvenido al Sistema de Mentoría Académica</h1>
-        <p>Una plataforma que te conecta con mentores para mejorar tu rendimiento académico.</p>
-    </main>
-
-    <?php include("../views/components/footer.php"); ?>
-
-</body>
-</html>
+    case 'inicio':
+    default:
+        require_once BASE_PATH . '/controllers/HomeController.php';
+        (new HomeController)->inicio();
+        break;
+}

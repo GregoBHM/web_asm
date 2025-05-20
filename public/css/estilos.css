@@ -1,9 +1,13 @@
 .header {
-    background-color: #002147; 
-    padding: 10px 30px;
-    border-bottom: 3px solid #ffcc00; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #002147;
+    padding: 10px 10px;
+    border-bottom: 3px solid #ffcc00;
 }
-
 .container {
     display: flex;
     align-items: center;
@@ -31,9 +35,9 @@
 }
 
 .menu a i {
-    font-size: 22px;
+    font-size: 18px; 
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
 }
 
 .menu a:hover {
