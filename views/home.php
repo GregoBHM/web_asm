@@ -58,14 +58,6 @@
 </style>
 
 <main>
-    <div class="hero">
-        <div class="carousel">
-            <img src="<?= BASE_URL ?>/public/img/carrusel1.jpg" alt="Mentoría Académica 1">
-            <img src="<?= BASE_URL ?>/public/img/carrusel2.jpg" alt="Mentoría Académica 2">
-            <img src="<?= BASE_URL ?>/public/img/carrusel3.jpg" alt="Mentoría Académica 3">
-        </div>
-    </div>
-
     <div class="welcome">
         <h1>Bienvenido al Sistema de Mentoría Académica</h1>
         <p>

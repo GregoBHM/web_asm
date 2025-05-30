@@ -1,3 +1,4 @@
+/* Header general */
 .header {
     position: fixed;
     top: 0;
@@ -6,26 +7,26 @@
     z-index: 1000;
     background-color: #002147;
     padding: 10px 10px;
-    border-bottom: 3px solid #ffcc00;
+    border-bottom: 3px solid #ffffff;
 }
 .container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
 }
-
+.logo {
+    margin-right: 30%; 
+}
 .logo img {
     height: 60px;
 }
-
 .menu {
     display: flex;
     gap: 30px;
     align-items: center;
     flex-wrap: wrap;
 }
-
 .menu a {
     text-align: center;
     color: #ffffff;
@@ -33,19 +34,55 @@
     font-size: 13px;
     transition: color 0.3s ease, transform 0.2s;
 }
-
 .menu a i {
-    font-size: 18px; 
+    font-size: 18px;
     display: block;
     margin-bottom: 3px;
 }
-
 .menu a:hover {
-    color: #ffcc00;
+    color: #f4f4f4;
     transform: scale(1.05);
 }
-
 .menu a.reserva {
     color: #00BFFF;
     font-weight: bold;
+}
+
+/* Submenú por rol */
+.submenu-rol {
+    background-color: #01335f;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    padding: 12px 0;
+    margin-top: 70px; /* separación del header */
+}
+.submenu-rol a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+.submenu-rol a:hover {
+    background-color: #ffcc00;
+    color: #002147;
+}
+
+/* Panel Central */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+.contenido-dashboard {
+    margin-top: 130px; /* espacio por el header y submenu */
+    padding: 20px;
+}
+.panel-central {
+    background: #f4f4f4;
+    margin-top: 20px;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
 }

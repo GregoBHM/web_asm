@@ -9,7 +9,6 @@
 
         <nav class="menu">
             <a href="<?= BASE_URL ?>/public/index.php"><i class="fas fa-home"></i>Inicio</a>
-            <a href="<?= BASE_URL ?>/public/index.php?accion=mentoria"><i class="fas fa-brain"></i>¿Qué es la mentoría?</a>
             <a href="<?= BASE_URL ?>/public/index.php?accion=mentores"><i class="fas fa-chalkboard-teacher"></i>Mentores destacados</a>
             <a href="<?= BASE_URL ?>/public/index.php?accion=alumnos"><i class="fas fa-user-graduate"></i>Estudiantes destacados</a>
             <a href="<?= BASE_URL ?>/public/index.php?accion=anuncios"><i class="fas fa-bullhorn"></i>Novedades</a>

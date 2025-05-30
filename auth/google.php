@@ -1,4 +1,3 @@
-
 <?php
 use Google\Service\Oauth2;
 
@@ -32,13 +31,15 @@ if (!isset($_GET['code'])) {
 
     if ($existe) {
         $_SESSION['usuario_id'] = $existe['ID_USUARIO'];
-        $_SESSION['rol'] = $existe['ROL'];
+        $_SESSION['rol_id'] = (int) $existe['ID_ROL'];
+        $_SESSION['rol_nombre'] = $existe['ROL'];
     } else {
         $id = $usuario->registrarOAuth($userInfo->givenName, $userInfo->familyName, $userInfo->email);
         $_SESSION['usuario_id'] = $id;
-        $_SESSION['rol'] = 'visitante';
+        $_SESSION['rol_id'] = 1; 
+        $_SESSION['rol_nombre'] = 'VISITANTE';
     }
 
-    header('Location: ' . BASE_URL . '/public/index.php');
+    header('Location: ' . BASE_URL . '/views/dashboard.php');
     exit;
 }

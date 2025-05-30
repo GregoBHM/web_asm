@@ -17,8 +17,10 @@ class AuthController {
         if ($datos) {
             session_start();
             $_SESSION['usuario_id'] = $datos['ID_USUARIO'];
-            $_SESSION['rol'] = $datos['ROL'];
-            header('Location: ' . BASE_URL . '/public/index.php');
+            $_SESSION['rol_id'] = (int)$datos['ID_ROL']; 
+            $_SESSION['rol_nombre'] = $datos['ROL'];   
+
+            header('Location: ' . BASE_URL . '/views/dashboard.php');
         } else {
             echo "<script>alert('Credenciales incorrectas');window.location.href='" . BASE_URL . "/public/index.php?accion=login';</script>";
         }

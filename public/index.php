@@ -4,6 +4,12 @@ require_once '../config/constants.php';
 
 $accion = $_GET['accion'] ?? 'inicio';
 
+// Redirigir a dashboard si ya está logeado
+if (($accion === 'inicio' || $accion === '') && isset($_SESSION['usuario_id'])) {
+    header('Location: ' . BASE_URL . '/views/dashboard.php');
+    exit;
+}
+
 // Mapeo de acciones del AuthController
 $authActions = [
     'login' => 'mostrarLogin',

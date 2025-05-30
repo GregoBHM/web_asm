@@ -9,11 +9,11 @@ class Usuario {
     }
 
     public function verificarCredenciales($email, $password) {
-        $stmt = $this->pdo->prepare("SELECT U.ID_USUARIO, U.PASSWORD, R.NOMBRE AS ROL
-                                     FROM USUARIO U
-                                     INNER JOIN ROLES_ASIGNADOS RA ON U.ID_USUARIO = RA.ID_USUARIO
-                                     INNER JOIN ROL R ON RA.ID_ROL = R.ID_ROL
-                                     WHERE U.EMAIL = ? LIMIT 1");
+        $stmt = $this->pdo->prepare("SELECT U.ID_USUARIO, U.PASSWORD, R.ID_ROL, R.NOMBRE AS ROL
+                                    FROM USUARIO U
+                                    INNER JOIN ROLES_ASIGNADOS RA ON U.ID_USUARIO = RA.ID_USUARIO
+                                    INNER JOIN ROL R ON RA.ID_ROL = R.ID_ROL
+                                    WHERE U.EMAIL = ? LIMIT 1");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
@@ -36,11 +36,11 @@ class Usuario {
         $stmt->execute([$user_id]);
     }
     public function buscarPorCorreo($email) {
-        $stmt = $this->pdo->prepare("SELECT U.ID_USUARIO, R.NOMBRE AS ROL
-            FROM USUARIO U
-            JOIN ROLES_ASIGNADOS RA ON RA.ID_USUARIO = U.ID_USUARIO
-            JOIN ROL R ON RA.ID_ROL = R.ID_ROL
-            WHERE U.EMAIL = ?");
+        $stmt = $this->pdo->prepare("SELECT U.ID_USUARIO, U.EMAIL, R.ID_ROL, R.NOMBRE AS ROL
+                                    FROM USUARIO U
+                                    JOIN ROLES_ASIGNADOS RA ON RA.ID_USUARIO = U.ID_USUARIO
+                                    JOIN ROL R ON RA.ID_ROL = R.ID_ROL
+                                    WHERE U.EMAIL = ?");
         $stmt->execute([$email]);
         return $stmt->fetch();
     }
