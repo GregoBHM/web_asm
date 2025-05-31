@@ -1,5 +1,6 @@
 <?php
-require_once '../config/Database.php';
+require_once BASE_PATH . '/config/Database.php';
+
 
 class Usuario {
     private $pdo;
@@ -57,4 +58,27 @@ class Usuario {
 
         return $user_id;
     }
+    public function obtenerPorId($id) {
+    $stmt = $this->pdo->prepare("SELECT * FROM usuario WHERE ID_USUARIO = ?");
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+public function actualizarPerfil($id, $nombre, $apellido, $email, $password = null) {
+    if ($password) {
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $this->pdo->prepare("UPDATE usuario SET NOMBRE = ?, APELLIDO = ?, EMAIL = ?, PASSWORD = ? WHERE ID_USUARIO = ?");
+        $stmt->execute([$nombre, $apellido, $email, $hash, $id]);
+    } else {
+        $stmt = $this->pdo->prepare("UPDATE usuario SET NOMBRE = ?, APELLIDO = ?, EMAIL = ? WHERE ID_USUARIO = ?");
+        $stmt->execute([$nombre, $apellido, $email, $id]);
+    }
+}
+public function obtenerIdEstudiante($id_usuario) {
+    $stmt = $this->pdo->prepare("SELECT ID_ESTUDIANTE FROM estudiante WHERE ID_USUARIO = ?");
+    $stmt->execute([$id_usuario]);
+    return $stmt->fetchColumn();
+}
+
+
 }

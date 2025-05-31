@@ -6,5 +6,6 @@
 <title><?php echo $tituloPagina; ?></title>
 
 <!-- Estilos -->
-<link rel="stylesheet" href="../public/css/estilos.css">
+<link rel="stylesheet" href="<?= BASE_URL ?>/public/css/estilos.css">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
