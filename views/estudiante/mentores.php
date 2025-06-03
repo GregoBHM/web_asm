@@ -8,6 +8,7 @@ if (!isset($_SESSION['usuario_id']) || $_SESSION['rol_id'] !== 2) {
 
 include BASE_PATH . '/views/components/head.php';
 include BASE_PATH . '/views/components/header.php';
+include BASE_PATH . '/views/components/nav.php';
 
 require_once BASE_PATH . '/models/Usuario.php';
 require_once BASE_PATH . '/models/Clase.php';

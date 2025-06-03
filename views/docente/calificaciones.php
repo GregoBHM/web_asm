@@ -29,6 +29,7 @@ if ($seleccionadoClase && $seleccionadoUnidad) {
 
 include BASE_PATH . '/views/components/head.php';
 include BASE_PATH . '/views/components/header.php';
+include BASE_PATH . '/views/components/nav.php';
 ?>
 
 <div class="contenido-dashboard">
@@ -61,4 +62,33 @@ include BASE_PATH . '/views/components/header.php';
     <?php if (!empty($estudiantes)): ?>
         <form method="POST" action="guardar_calificaciones.php">
             <input type="hidden" name="ID_CLASE" value="<?= $seleccionadoClase ?>">
-            <input type="hidden" name="ID_UNIDAD_
+             <input type="hidden" name="ID_UNIDAD" value="<?= $seleccionadoUnidad ?>">
+
+            <table border="1" cellpadding="8" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Estudiante</th>
+                        <th>Nota 1</th>
+                        <th>Nota 2</th>
+                        <th>Nota 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($estudiantes as $estudiante): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($estudiante['NOMBRE'] . ' ' . $estudiante['APELLIDO']) ?></td>
+                            <td><input type="number" name="notas[<?= $estudiante['ID_ESTUDIANTE'] ?>][nota1]" min="0" max="20" step="0.1" required></td>
+                            <td><input type="number" name="notas[<?= $estudiante['ID_ESTUDIANTE'] ?>][nota2]" min="0" max="20" step="0.1" required></td>
+                            <td><input type="number" name="notas[<?= $estudiante['ID_ESTUDIANTE'] ?>][nota3]" min="0" max="20" step="0.1" required></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <br>
+            <button type="submit">Guardar Calificaciones</button>
+        </form>
+    <?php endif; ?>
+</div>
+
+<?php include BASE_PATH . '/views/components/footer.php'; ?>

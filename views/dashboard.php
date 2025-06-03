@@ -9,22 +9,8 @@ $rol = (int) $_SESSION['rol_id'];
 
 include BASE_PATH . '/views/components/head.php'; 
 include BASE_PATH . '/views/components/header.php';
+include BASE_PATH . '/views/components/nav.php';
 ?>
-
-<div class="submenu-rol">
-    <?php if ($rol === 2): ?>
-        <a href="<?= BASE_URL ?>/views/dashboards/clases.php">Mis Clases</a>
-        <a href="<?= BASE_URL ?>/views/dashboards/mentores.php">Mis Mentores</a>
-        <a href="<?= BASE_URL ?>/views/dashboards/calificaciones.php">Calificaciones</a>
-    <?php elseif ($rol === 3): ?>
-        <a href="<?= BASE_URL ?>/views/dashboards/alumnos.php">Alumnos</a>
-        <a href="<?= BASE_URL ?>/views/dashboards/sesiones.php">Sesiones</a>
-    <?php elseif ($rol === 4): ?>
-        <a href="<?= BASE_URL ?>/views/dashboards/usuarios.php">Gestión de Usuarios</a>
-        <a href="<?= BASE_URL ?>/views/dashboards/reportes.php">Reportes</a>
-    <?php endif; ?>
-    <a href="<?= BASE_URL ?>/views/dashboards/perfil.php">Mi Perfil</a>
-</div>
 
 <div class="contenido-dashboard">
     <div class="panel-central">

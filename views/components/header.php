@@ -16,10 +16,13 @@
             <a href="<?= BASE_URL ?>/public/index.php?accion=testimonios"><i class="fas fa-comment-dots"></i>Testimonios</a>
 
             <?php if (isset($_SESSION['usuario_id'])): ?>
-                <a href="<?= BASE_URL ?>/public/index.php?accion=cerrar"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a>
+                <a href="#" onclick="confirmarCerrarSesion(event, '<?= BASE_URL ?>/public/index.php?accion=cerrar')">
+                    <i class="fas fa-sign-out-alt"></i>Cerrar sesión
+                </a>
             <?php else: ?>
                 <a href="<?= BASE_URL ?>/public/index.php?accion=login"><i class="fas fa-sign-in-alt"></i>Iniciar sesión</a>
             <?php endif; ?>
         </nav>
+        <script src="<?= BASE_URL ?>/public/js/script.js"></script>
     </div>
 </header>

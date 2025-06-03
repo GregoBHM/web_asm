@@ -170,5 +170,15 @@ public function obtenerMentoresPorEstudiante($id_estudiante) {
     $stmt->execute([$id_estudiante]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
+public function listarEstudiantesPorClase($idClase) {
+    $stmt = $this->pdo->prepare("
+        SELECT E.ID_ESTUDIANTE, U.NOMBRE, U.APELLIDO
+        FROM registro_academico RA
+        JOIN estudiante E ON RA.ID_ESTUDIANTE = E.ID_ESTUDIANTE
+        JOIN usuario U ON E.ID_USUARIO = U.ID_USUARIO
+        WHERE RA.ID_CLASE = ?
+    ");
+    $stmt->execute([$idClase]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }
