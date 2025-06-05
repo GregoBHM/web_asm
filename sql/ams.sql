@@ -230,7 +230,8 @@ CREATE TABLE IF NOT EXISTS `roles_asignados` (
 
 -- Volcando datos para la tabla sistema_mentoria.roles_asignados: ~1 rows (aproximadamente)
 INSERT INTO `roles_asignados` (`ID_USUARIO`, `ID_ROL`, `FECHA_REG`, `ESTADO`) VALUES
-	(1, 1, '2025-05-20 13:46:43', 1);
+	(1, 2, '2025-05-20 13:46:43', 1),
+	(13, 1, '2025-06-05 14:19:10', 1);
 
 -- Volcando estructura para tabla sistema_mentoria.semestre_academico
 CREATE TABLE IF NOT EXISTS `semestre_academico` (
@@ -264,12 +265,15 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `CELULAR` varchar(100) DEFAULT NULL,
   `PASSWORD` varchar(100) DEFAULT NULL,
   `FECHA_REG` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`ID_USUARIO`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`ID_USUARIO`),
+  UNIQUE KEY `DNI` (`DNI`),
+  UNIQUE KEY `EMAIL` (`EMAIL`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.usuario: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.usuario: ~2 rows (aproximadamente)
 INSERT INTO `usuario` (`ID_USUARIO`, `DNI`, `NOMBRE`, `APELLIDO`, `EMAIL`, `CELULAR`, `PASSWORD`, `FECHA_REG`) VALUES
-	(1, NULL, 'GREGORY BRANDON', 'HUANCA MERMA', 'gh2022073898@virtual.upt.pe', NULL, NULL, '2025-05-20 12:32:35');
+	(1, NULL, 'GREGORY BRANDON', 'HUANCA MERMA', 'gh2022073898@virtual.upt.pe', NULL, NULL, '2025-05-20 12:32:35'),
+	(13, '77436156', 'GREGORY BRANDON', 'HUANCA MERMA', 'sefht7893@gmail.com', NULL, '$2y$10$TAOiROBuzhpx.ApY4eyWbeIx1dcieU1vPb0vjolKm3gK2hwR4Zr/.', '2025-06-05 14:19:10');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
