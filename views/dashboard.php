@@ -17,7 +17,7 @@ include BASE_PATH . '/views/components/nav.php';
         <h1>
             <?php
             switch ($rol) {
-                case 2: echo 'Bienvenido Estudiante'; break; //Redirigir al panel de su rol
+                case 2: echo 'Bienvenido Estudiante'; break;
                 case 3: echo 'Panel del Docente'; break;
                 case 4: echo 'Panel del Administrador'; break;
                 default: echo 'Bienvenido al Sistema'; break;

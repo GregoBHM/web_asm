@@ -24,17 +24,27 @@ class Usuario {
         return false;
     }
 
-    public function registrarUsuario($nombre, $apellido, $email, $password) {
-        $hash = password_hash($password, PASSWORD_DEFAULT);
+    public function registrarUsuario($dni, $nombre, $apellido, $email, $password) {
+        try {
+            $hash = password_hash($password, PASSWORD_DEFAULT);
 
-        $stmt = $this->pdo->prepare("INSERT INTO USUARIO (NOMBRE, APELLIDO, EMAIL, PASSWORD) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$nombre, $apellido, $email, $hash]);
+            $stmt = $this->pdo->prepare("INSERT INTO USUARIO (DNI, NOMBRE, APELLIDO, EMAIL, PASSWORD) VALUES (?, ?, ?, ?, ?)");
+            if (!$stmt->execute([$dni, $nombre, $apellido, $email, $hash])) {
+                return false;
+            }
 
-        $user_id = $this->pdo->lastInsertId();
+            $user_id = $this->pdo->lastInsertId();
 
-        // Rol visitante por defecto (ID_ROL = 1)
-        $stmt = $this->pdo->prepare("INSERT INTO ROLES_ASIGNADOS (ID_USUARIO, ID_ROL, FECHA_REG, ESTADO) VALUES (?, 1, NOW(), 1)");
-        $stmt->execute([$user_id]);
+            $stmt = $this->pdo->prepare("INSERT INTO ROLES_ASIGNADOS (ID_USUARIO, ID_ROL, FECHA_REG, ESTADO) VALUES (?, 1, NOW(), 1)");
+            if (!$stmt->execute([$user_id])) {
+                return false;
+            }
+
+            return true;
+        } catch (PDOException $e) {
+            error_log("Error al registrar usuario: " . $e->getMessage());
+            return false;
+        }
     }
     public function buscarPorCorreo($email) {
         $stmt = $this->pdo->prepare("SELECT U.ID_USUARIO, U.EMAIL, R.ID_ROL, R.NOMBRE AS ROL

@@ -4,7 +4,7 @@ require_once BASE_PATH . '/views/components/header.php';
 ?>
 <div class="register-container">
     <h2>Crear cuenta</h2>
-    <form id="formRegistro" method="post" action="<?= BASE_URL ?>/public/index.php?accion=procesar_registro">
+    <form id="formRegistro" method="post">
         <input type="text" name="dni" id="dni" maxlength="8" placeholder="DNI" required oninput="validarDNI(this.value)">
         
         <input type="text" name="nombre" id="nombre" placeholder="Nombres" readonly required>
@@ -33,6 +33,4 @@ require_once BASE_PATH . '/views/components/header.php';
         <button onclick="verificarCodigo()">Verificar</button>
     </div>
 </div>
-
-
 <?php require_once BASE_PATH . '/views/components/footer.php'; ?>

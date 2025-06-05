@@ -31,14 +31,22 @@ class AuthController {
     }
 
     public function procesarRegistro() {
+        header('Content-Type: application/json');
+
+        $dni = $_POST['dni'] ?? '';
         $nombre = $_POST['nombre'] ?? '';
         $apellido = $_POST['apellido'] ?? '';
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
         $usuario = new Usuario();
-        $usuario->registrarUsuario($nombre, $apellido, $email, $password);
+        $exito = $usuario->registrarUsuario($dni, $nombre, $apellido, $email, $password);
 
-        echo "<script>alert('Registro exitoso');window.location.href='" . BASE_URL . "/public/index.php?accion=login';</script>";
+        if ($exito) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al registrar el usuario.']);
+        }
+        exit;
     }
 } 

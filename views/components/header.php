@@ -23,6 +23,5 @@
                 <a href="<?= BASE_URL ?>/public/index.php?accion=login"><i class="fas fa-sign-in-alt"></i>Iniciar sesión</a>
             <?php endif; ?>
         </nav>
-        <script src="<?= BASE_URL ?>/public/js/script.js"></script>
     </div>
 </header>
