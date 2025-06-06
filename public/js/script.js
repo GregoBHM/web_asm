@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             if (data.success) {
                 alert("✅ Registro completado.");
-                window.location.href = `${BASE_URL}/public/index.php?accion=login`;
+                window.location.href = `${BASE_URL}/public/index.php?accion=inicio`;
             } else {
                 alert("❌ " + data.message);
             }
@@ -184,4 +184,43 @@ document.addEventListener("DOMContentLoaded", function () {
             if (carga) carga.remove();
         }
     };
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const header = document.querySelector('.header');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+    
+    // Marcar enlace activo
+    const currentUrl = window.location.href;
+    navLinks.forEach(link => {
+        if (currentUrl.includes(link.href) && link.href !== window.location.origin + '/') {
+            link.setAttribute('data-active', 'true');
+        }
+    });
+    
+    // Cerrar menú móvil al hacer clic en un enlace
+    const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const toggleButton = document.querySelector('.navbar-toggler');
+    
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            mobileMenu.classList.remove('show');
+            toggleButton.setAttribute('aria-expanded', 'false');
+        });
+    });
+    
+    // Efecto parallax sutil en el header
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const rate = scrolled * -0.5;
+        header.style.transform = `translateY(${rate}px)`;
+    });
 });
