@@ -12,12 +12,10 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
             </div>
         </a>
         
-        <!-- Botón hamburguesa -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <i class="fas fa-bars text-white"></i>
         </button>
         
-        <!-- Enlaces de navegación -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
@@ -51,7 +49,6 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
                     </a>
                 </li>
             </ul>
-
             <!-- Botón login/logout dinámico -->
             <div class="d-flex">
                 <?php if (isset($_SESSION['usuario_id'])): ?>

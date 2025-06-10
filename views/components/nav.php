@@ -14,6 +14,6 @@
             <a href="<?= BASE_URL ?>/views/dashboards/reportes.php">Reportes</a>
         <?php endif; ?>
 
-        <a href="<?= BASE_URL ?>/views/dashboards/perfil.php">Mi Perfil</a>
+        <a href="<?= BASE_URL ?>/views/usuario/perfil.php">Mi Perfil</a>
     </div>
 <?php endif; ?>

@@ -3,7 +3,7 @@ require_once '../../config/constants.php';
 require_once BASE_PATH . '/models/Usuario.php';
 
 session_start();
-if (!isset($_SESSION['usuario_id']) || $_SESSION['rol_id'] !== 3) {
+if (!isset($_SESSION['usuario_id']) || $_SESSION['rol_id'] == 0) {
     header('Location: ' . BASE_URL . '/public/index.php');
     exit;
 }
