@@ -64,9 +64,30 @@ CREATE TABLE IF NOT EXISTS `ciclo` (
   PRIMARY KEY (`ID_CICLO`),
   KEY `ID_SEMESTRE` (`ID_SEMESTRE`),
   CONSTRAINT `ciclo_ibfk_1` FOREIGN KEY (`ID_SEMESTRE`) REFERENCES `semestre_academico` (`ID_SEMESTRE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.ciclo: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.ciclo: ~20 rows (aproximadamente)
+INSERT INTO `ciclo` (`ID_CICLO`, `NOMBRE`, `ID_SEMESTRE`) VALUES
+	(1, 'CICLO - I', 1),
+	(2, 'CICLO - II', 1),
+	(3, 'CICLO - III', 1),
+	(4, 'CICLO - IV', 1),
+	(5, 'CICLO - V', 1),
+	(6, 'CICLO - VI', 1),
+	(7, 'CICLO - VII', 1),
+	(8, 'CICLO - VIII', 1),
+	(9, 'CICLO - IX', 1),
+	(10, 'CICLO - X', 1),
+	(16, 'CICLO - I', 2),
+	(17, 'CICLO - II', 2),
+	(18, 'CICLO - III', 2),
+	(19, 'CICLO - IV', 2),
+	(20, 'CICLO - V', 2),
+	(21, 'CICLO - VI', 2),
+	(22, 'CICLO - VII', 2),
+	(23, 'CICLO - VIII', 2),
+	(24, 'CICLO - IX', 2),
+	(25, 'CICLO - X', 2);
 
 -- Volcando estructura para tabla sistema_mentoria.clase
 CREATE TABLE IF NOT EXISTS `clase` (
@@ -80,12 +101,13 @@ CREATE TABLE IF NOT EXISTS `clase` (
   `FECHA_REG` datetime DEFAULT current_timestamp(),
   `ID_AULA` int(11) DEFAULT NULL,
   `ID_CURSO` int(11) DEFAULT NULL,
+  `ENLACE` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`ID_CLASE`),
   KEY `ID_AULA` (`ID_AULA`),
   KEY `ID_CURSO` (`ID_CURSO`),
   CONSTRAINT `clase_ibfk_1` FOREIGN KEY (`ID_AULA`) REFERENCES `aula` (`ID_AULA`),
   CONSTRAINT `clase_ibfk_2` FOREIGN KEY (`ID_CURSO`) REFERENCES `curso` (`ID_CURSO`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla sistema_mentoria.clase: ~0 rows (aproximadamente)
 
@@ -114,9 +136,70 @@ CREATE TABLE IF NOT EXISTS `curso` (
   PRIMARY KEY (`ID_CURSO`),
   KEY `ID_CICLO` (`ID_CICLO`),
   CONSTRAINT `curso_ibfk_1` FOREIGN KEY (`ID_CICLO`) REFERENCES `ciclo` (`ID_CICLO`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.curso: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.curso: ~60 rows (aproximadamente)
+INSERT INTO `curso` (`ID_CURSO`, `CODIGO`, `NOMBRE`, `ID_CICLO`) VALUES
+	(1, 'EG-181', 'COMUNICACIÓN I', 1),
+	(2, 'EG-182', 'MATEMÁTICA BÁSICA', 1),
+	(3, 'EG-183', 'ESTRATEGIAS PARA EL APRENDIZAJE AUTÓNOMO', 1),
+	(4, 'EG-184', 'DESARROLLO PERSONAL Y LIDERAZGO', 1),
+	(5, 'EG-185', 'DESARROLLO DE COMPETENCIAS DIGITALES', 1),
+	(6, 'INE-186', 'MATEMÁTICA I', 1),
+	(7, 'EG-281', 'COMUNICACION II', 2),
+	(8, 'EG-282', 'TERRITORIO PERUANO, DEFENSA Y SEGURIDAD NACIONAL', 2),
+	(9, 'EG-283', 'FILOSOFIA', 2),
+	(10, 'INE-284', 'TECNICAS DE PROGRAMACION', 2),
+	(11, 'INE-285', 'FISICA I', 2),
+	(12, 'INE-286', 'MATEMATICA II', 2),
+	(13, 'INE-381', 'ECONOMIA', 3),
+	(14, 'EG-382', 'ETICA', 3),
+	(15, 'INE-383', 'ESTADISTICA Y PROBABILIDADES', 3),
+	(16, 'SI-384', 'ESTRUCTURA DE DATOS', 3),
+	(17, 'SI-385', 'SISTEMAS DE INFORMACION', 3),
+	(18, 'SI-386', 'MATEMATICA DISCRETA', 3),
+	(19, 'SI-481', 'MODELAMIENTO DE PROCESOS', 4),
+	(20, 'SI-482', 'INGENIERIA ECONOMICA Y FINANCIERA', 4),
+	(21, 'SI-483', 'INTERACCION Y DISEÑO DE INTERFACES', 4),
+	(22, 'INE-484', 'DISEÑO DE INGENIERIA', 4),
+	(23, 'SI-485', 'SISTEMAS ELECTRONICOS DIGITALES', 4),
+	(24, 'SI-486', 'PROGRAMACION I', 4),
+	(25, 'SI-581', 'ARQUITECTURA DE COMPUTADORAS', 5),
+	(26, 'SI-582', 'DISEÑO DE DATOS', 5),
+	(27, 'SI-583', 'DISEÑO Y MODELAMIENTO VIRTUAL', 5),
+	(28, 'SI-584', 'INGENIERIA DE REQUERIMIENTOS', 5),
+	(29, 'SI-585', 'INGENIERIA DE SOFTWARE', 5),
+	(30, 'SI-586', 'PROGRAMACION II', 5),
+	(31, 'SI-681', 'ECOLOGIA Y DESARROLLO SOSTENIBLE', 6),
+	(32, 'SI-682', 'SISTEMAS OPERATIVOS I', 6),
+	(33, 'SI-683', 'BASE DE DATOS', 6),
+	(34, 'SI-684', 'INVESTIGACION DE OPERACIONES', 6),
+	(35, 'SI-685', 'DISEÑO Y ARQUITECTURA DE SOFTWARE', 6),
+	(36, 'SI-686', 'PROGRAMACION III', 6),
+	(37, 'EG-781', 'PROBLEMAS Y DESAFIOS DEL PERU EN UN MUNDO GLOBAL', 7),
+	(38, 'SI-782', 'SISTEMAS OPERATIVOS II', 7),
+	(39, 'SI-783', 'BASE DE DATOS II', 7),
+	(40, 'SI-784', 'CALIDAD Y PRUEBAS DE SOFTWARE', 7),
+	(41, 'SI-785', 'GESTION DE PROYECTOS DE TI', 7),
+	(42, 'SI-786', 'PROGRAMACION WEB I', 7),
+	(43, 'SI-881', 'INTELIGENCIA ARTIFICIAL', 8),
+	(44, 'SI-882', 'REDES DE COMPUTADORAS', 8),
+	(45, 'SI-883', 'SOLUCIONES MOVILES I', 8),
+	(46, 'SI-884', 'ESTADISTICA INFERENCIAL Y ANALISIS DE DATOS', 8),
+	(47, 'SI-885', 'INTELIGENCIA DE NEGOCIOS', 8),
+	(48, 'SI-886', 'PLANEAMIENTO ESTRATEGICO DE TI', 8),
+	(49, 'SI-981', 'TALLER DE TESIS I', 9),
+	(50, 'SI-982', 'PROGRAMACION WEB II', 9),
+	(51, 'SI-983', 'CONSTRUCCION DE SOFTWARE I', 9),
+	(52, 'SI-984', 'REDES Y COMUNICACION DE DATOS II', 9),
+	(53, 'SI-985', 'GESTION DE LA CONFIGURACION DE SOFTWARE', 9),
+	(54, 'SI-986', 'INGLES TECNICO', 9),
+	(55, 'SI-080', 'TALLER DE TESIS II / TRABAJO DE INVESTIGACION', 10),
+	(56, 'SI-082', 'SEGURIDAD DE TECNOLOGIA DE INFORMACION', 10),
+	(57, 'SI-083', 'CONSTRUCCION DE SOFTWARE II', 10),
+	(58, 'SI-084', 'AUDITORIA DE SISTEMAS', 10),
+	(59, 'SI-085', 'TALLER DE EMPRENDIMIENTO Y LIDERAZGO', 10),
+	(60, 'SI-086', 'GERENCIA DE TECNOLOGIAS DE INFORMACION', 10);
 
 -- Volcando estructura para tabla sistema_mentoria.docente
 CREATE TABLE IF NOT EXISTS `docente` (
@@ -142,9 +225,11 @@ CREATE TABLE IF NOT EXISTS `estudiante` (
   PRIMARY KEY (`ID_ESTUDIANTE`),
   KEY `ID_USUARIO` (`ID_USUARIO`),
   CONSTRAINT `estudiante_ibfk_1` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.estudiante: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.estudiante: ~1 rows (aproximadamente)
+INSERT INTO `estudiante` (`ID_ESTUDIANTE`, `ID_USUARIO`, `CODIGO`, `EMAIL_CORPORATIVO`, `FECHA_REG`, `CONDICION`) VALUES
+	(1, 1, '2022073898', 'gh2022073898@virtual.upt.pe', '2025-06-13 14:55:16', NULL);
 
 -- Volcando estructura para tabla sistema_mentoria.inscripcion
 CREATE TABLE IF NOT EXISTS `inscripcion` (
@@ -237,14 +322,14 @@ INSERT INTO `roles_asignados` (`ID_USUARIO`, `ID_ROL`, `FECHA_REG`, `ESTADO`) VA
 CREATE TABLE IF NOT EXISTS `semestre_academico` (
   `ID_SEMESTRE` int(11) NOT NULL AUTO_INCREMENT,
   `CODIGO` varchar(100) DEFAULT NULL,
-  `ID_ESTUDIANTE` int(11) DEFAULT NULL,
   `FECHA` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`ID_SEMESTRE`),
-  KEY `ID_ESTUDIANTE` (`ID_ESTUDIANTE`),
-  CONSTRAINT `semestre_academico_ibfk_1` FOREIGN KEY (`ID_ESTUDIANTE`) REFERENCES `estudiante` (`ID_ESTUDIANTE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`ID_SEMESTRE`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla sistema_mentoria.semestre_academico: ~0 rows (aproximadamente)
+INSERT INTO `semestre_academico` (`ID_SEMESTRE`, `CODIGO`, `FECHA`) VALUES
+	(1, '2025-I', '2025-06-13 15:56:01'),
+	(2, '2025-II', '2025-06-13 15:56:01');
 
 -- Volcando estructura para tabla sistema_mentoria.unidad
 CREATE TABLE IF NOT EXISTS `unidad` (
@@ -270,7 +355,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   UNIQUE KEY `EMAIL` (`EMAIL`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.usuario: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.usuario: ~1 rows (aproximadamente)
 INSERT INTO `usuario` (`ID_USUARIO`, `DNI`, `NOMBRE`, `APELLIDO`, `EMAIL`, `CELULAR`, `PASSWORD`, `FECHA_REG`) VALUES
 	(1, NULL, 'GREGORY BRANDON', 'HUANCA MERMA', 'gh2022073898@virtual.upt.pe', NULL, NULL, '2025-05-20 12:32:35'),
 	(13, '77436156', 'GREGORY BRANDON', 'HUANCA MERMA', 'sefht7893@gmail.com', NULL, '$2y$10$TAOiROBuzhpx.ApY4eyWbeIx1dcieU1vPb0vjolKm3gK2hwR4Zr/.', '2025-06-05 14:19:10');
