@@ -40,6 +40,6 @@ if (!isset($_GET['code'])) {
         $_SESSION['rol_nombre'] = 'VISITANTE';
     }
 
-    header('Location: ' . BASE_URL . '/views/dashboard.php');
+    header('Location: ' . BASE_URL . '/public/index.php');
     exit;
 }

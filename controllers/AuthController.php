@@ -20,7 +20,7 @@ class AuthController {
             $_SESSION['rol_id'] = (int)$datos['ID_ROL']; 
             $_SESSION['rol_nombre'] = $datos['ROL'];   
 
-            header('Location: ' . BASE_URL . '/views/dashboard.php');
+            header('Location: ' . BASE_URL . '/public/index.php');
         } else {
             echo "<script>alert('Credenciales incorrectas');window.location.href='" . BASE_URL . "/public/index.php?accion=login';</script>";
         }

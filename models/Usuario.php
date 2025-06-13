@@ -61,7 +61,7 @@ class Usuario {
         $stmt->execute([$nombre, $apellido, $email]);
 
         $user_id = $this->pdo->lastInsertId();
-
+        
         // Rol visitante (ID_ROL = 1)
         $stmt = $this->pdo->prepare("INSERT INTO ROLES_ASIGNADOS (ID_USUARIO, ID_ROL, FECHA_REG, ESTADO) VALUES (?, 1, NOW(), 1)");
         $stmt->execute([$user_id]);
@@ -74,14 +74,20 @@ class Usuario {
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-public function actualizarPerfil($id, $nombre, $apellido, $email, $password = null) {
-    if ($password) {
+public function actualizarPassword($id, $password) {
+    try {
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $this->pdo->prepare("UPDATE usuario SET NOMBRE = ?, APELLIDO = ?, EMAIL = ?, PASSWORD = ? WHERE ID_USUARIO = ?");
-        $stmt->execute([$nombre, $apellido, $email, $hash, $id]);
-    } else {
-        $stmt = $this->pdo->prepare("UPDATE usuario SET NOMBRE = ?, APELLIDO = ?, EMAIL = ? WHERE ID_USUARIO = ?");
-        $stmt->execute([$nombre, $apellido, $email, $id]);
+        $stmt = $this->pdo->prepare("UPDATE usuario SET PASSWORD = ? WHERE ID_USUARIO = ?");
+        $stmt->execute([$hash, $id]);
+        
+        if ($stmt->rowCount() === 0) {
+            throw new Exception("No se pudo actualizar la contraseña o el usuario no existe");
+        }
+        
+        return true;
+        
+    } catch (PDOException $e) {
+        throw new Exception("Error en la base de datos: " . $e->getMessage());
     }
 }
 public function obtenerIdEstudiante($id_usuario) {
