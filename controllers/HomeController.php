@@ -1,7 +1,7 @@
 <?php
-class HomeController {
+class HomeController extends BaseController {
 
-    public function inicio() {
+    public function inicioGet() {
         $archivo = BASE_PATH . '/views/home.php';
         if (file_exists($archivo)) {
             require $archivo;
@@ -11,9 +11,10 @@ class HomeController {
         }
     }
 
-    public function mostrarSeccion($seccion) {
+    public function mostrarSeccionGet() {
         $seccionesPermitidas = ['mentoria', 'mentores', 'alumnos', 'anuncios', 'faq', 'testimonios'];
-        
+        $seccion = $_GET['accion'] ?? null;
+
         if (!in_array($seccion, $seccionesPermitidas)) {
             echo "<h2 style='color: red;'>Sección no permitida.</h2>";
             return;

@@ -4,31 +4,121 @@ class Database {
     private static $instance = null;
     private $pdo;
 
-    private $host = 'localhost';
-    private $dbname = 'sistema_mentoria';
-    private $user = 'root';
-    private $pass = '';
+    private const DB_CONFIG = [
+        'host' => 'localhost',
+        'dbname' => 'sistema_mentoria',
+        'user' => 'root',
+        'pass' => '',
+        'charset' => 'utf8mb4',
+        'options' => [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+        ]
+    ];
 
-    // Constructor privado
     private function __construct() {
+        $this->connect();
+    }
+
+    private function __clone() {}
+
+    public function __wakeup() {
+        throw new Exception("No se puede deserializar una instancia de " . __CLASS__);
+    }
+
+    private function connect() {
         try {
-            $this->pdo = new PDO("mysql:host={$this->host};dbname={$this->dbname};charset=utf8", $this->user, $this->pass);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $dsn = sprintf(
+                "mysql:host=%s;dbname=%s;charset=%s",
+                self::DB_CONFIG['host'],
+                self::DB_CONFIG['dbname'],
+                self::DB_CONFIG['charset']
+            );
+
+            $this->pdo = new PDO(
+                $dsn,
+                self::DB_CONFIG['user'],
+                self::DB_CONFIG['pass'],
+                self::DB_CONFIG['options']
+            );
+
         } catch (PDOException $e) {
-            die("Error de conexión: " . $e->getMessage());
+            error_log("Error de conexión a BD: " . $e->getMessage());
+            throw new Exception("Error al conectar con la base de datos");
         }
     }
 
-    // Método estático para obtener la instancia
-    public static function getInstance() {
+    public static function getInstance(): Database {
         if (self::$instance === null) {
-            self::$instance = new Database();
+            self::$instance = new self();
         }
         return self::$instance;
     }
 
-    // Método para acceder al PDO
-    public function getConnection() {
+    public function getConnection(): PDO {
+        if (!$this->isConnected()) {
+            $this->connect();
+        }
         return $this->pdo;
+    }
+
+    private function isConnected(): bool {
+        try {
+            $this->pdo->query('SELECT 1');
+            return true;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function query(string $sql, array $params = []): PDOStatement {
+        try {
+            $stmt = $this->getConnection()->prepare($sql);
+            $stmt->execute($params);
+            return $stmt;
+        } catch (PDOException $e) {
+            error_log("Error en consulta: " . $e->getMessage());
+            throw new Exception("Error al ejecutar la consulta");
+        }
+    }
+
+    public function fetchOne(string $sql, array $params = []) {
+        return $this->query($sql, $params)->fetch();
+    }
+
+    public function fetchAll(string $sql, array $params = []): array {
+        return $this->query($sql, $params)->fetchAll();
+    }
+
+    public function insert(string $sql, array $params = []): string {
+        $this->query($sql, $params);
+        return $this->getConnection()->lastInsertId();
+    }
+
+    public function execute(string $sql, array $params = []): int {
+        return $this->query($sql, $params)->rowCount();
+    }
+
+    public function beginTransaction(): void {
+        $this->getConnection()->beginTransaction();
+    }
+
+    public function commit(): void {
+        $this->getConnection()->commit();
+    }
+
+    public function rollback(): void {
+        $this->getConnection()->rollback();
+    }
+
+    public function inTransaction(): bool {
+        return $this->getConnection()->inTransaction();
+    }
+
+    public function close(): void {
+        $this->pdo = null;
+        self::$instance = null;
     }
 }

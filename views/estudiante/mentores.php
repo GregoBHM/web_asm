@@ -16,7 +16,7 @@ require_once BASE_PATH . '/models/Clase.php';
 $usuarioModel = new Usuario();
 $id_estudiante = $usuarioModel->obtenerIdEstudiante($_SESSION['usuario_id']);
 
-$claseModel = new Clase();
+$claseModel = new ClaseModel();
 $mentores = $claseModel->obtenerMentoresPorEstudiante($id_estudiante);
 ?>
 

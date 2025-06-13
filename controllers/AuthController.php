@@ -1,13 +1,13 @@
 <?php
 require_once BASE_PATH . '/models/Usuario.php';
 
-class AuthController {
+class AuthController extends BaseController {
 
-    public function mostrarLogin() {
+    public function loginGet() {
         require BASE_PATH . '/views/login.php';
     }
 
-    public function procesarLogin() {
+    public function loginPost() {
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
@@ -26,11 +26,11 @@ class AuthController {
         }
     }
 
-    public function mostrarRegistro() {
+    public function registroGet() {
         require BASE_PATH . '/views/register.php';
     }
 
-    public function procesarRegistro() {
+    public function registroPost() {
         header('Content-Type: application/json');
 
         $dni = $_POST['dni'] ?? '';
@@ -49,4 +49,4 @@ class AuthController {
         }
         exit;
     }
-} 
+}
