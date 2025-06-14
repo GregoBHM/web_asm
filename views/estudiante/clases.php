@@ -51,6 +51,8 @@ require_once BASE_PATH . '/views/components/header.php';
 
 <style>
 :root {
+    --primary-blue: #1e3a5f;
+    --secondary-blue: #2c5282;
     --accent-blue: #5a73c4;
     --light-blue: #e8f0fe;
     --dark-blue: #2d4482;
@@ -69,12 +71,13 @@ require_once BASE_PATH . '/views/components/header.php';
 }
 
 .clase-card {
-    border: none;
-    box-shadow: 0 0.125rem 0.25rem rgba(60, 90, 166, 0.1);
-    transition: all 0.3s ease;
-    border-radius: 0.75rem;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
+    border: none !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    margin-bottom: 1.5rem !important;
+    background: white !important;
+    transition: all 0.3s ease !important;
 }
 
 .clase-card:hover {
@@ -83,11 +86,14 @@ require_once BASE_PATH . '/views/components/header.php';
 }
 
 .clase-header {
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-    color: white;
-    padding: 1.5rem;
-    position: relative;
-    overflow: hidden;
+    background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%) !important;
+    color: white !important;
+    padding: 1rem 1.5rem !important; /* Reducido el padding vertical */
+    position: relative !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    min-height: 80px !important; /* Altura fija más compacta */
 }
 
 .clase-header::before {
@@ -100,35 +106,35 @@ require_once BASE_PATH . '/views/components/header.php';
     background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
     transform: rotate(45deg);
 }
-
+.titulo-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.25rem !important;
+}
 .clase-titulo {
-    margin: 0;
-    font-size: 1.4rem;
-    font-weight: 600;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    position: relative;
-    z-index: 1;
+    color: white !important;
+    font-size: 1.2rem !important; /* Ligeramente más pequeño */
+    font-weight: 600 !important;
+    margin: 0 !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+    line-height: 1.2 !important; /* Altura de línea compacta */
 }
 
 .clase-codigo {
-    margin: 0;
-    font-size: 0.9rem;
-    opacity: 0.9;
-    position: relative;
-    z-index: 1;
+    color: rgba(255,255,255,0.9) !important;
+    font-size: 0.85rem !important;
+    margin: 0 !important;
+    line-height: 1 !important;
 }
 
 .estado-badge {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 2;
-    font-size: 0.75rem;
-    padding: 0.4rem 0.8rem;
-    border-radius: 50px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    position: static !important; /* Cambiar de absolute a static */
+    padding: 0.3rem 0.7rem !important;
+    border-radius: 15px !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
 }
 
 .estado-activo {
@@ -150,37 +156,37 @@ require_once BASE_PATH . '/views/components/header.php';
 }
 
 .clase-body {
-    padding: 1.5rem;
+    padding: 1rem 1.5rem !important; 
 }
 
 .info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important; 
+    gap: 0.75rem !important; 
+    margin-bottom: 1rem !important; 
 }
 
 .info-item {
-    background-color: white;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border-left: 4px solid var(--primary-blue);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background: #f8f9fa !important;
+    padding: 0.75rem !important; 
+    border-radius: 6px !important;
+    border-left: 3px solid #1e3a5f !important; 
 }
 
 .info-label {
-    font-weight: 600;
-    color: var(--text-gray);
-    font-size: 0.85rem;
-    margin-bottom: 0.25rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    color: #6c757d !important;
+    text-transform: uppercase !important;
+    margin-bottom: 0.2rem !important;
+    line-height: 1 !important;
 }
 
 .info-value {
-    color: var(--dark-blue);
-    font-size: 1rem;
-    font-weight: 500;
+    font-size: 0.9rem !important; 
+    font-weight: 500 !important;
+    color: #1e3a5f !important;
+    line-height: 1.2 !important;
 }
 
 .acciones-container {
@@ -192,19 +198,23 @@ require_once BASE_PATH . '/views/components/header.php';
 }
 
 .btn-calificar {
-    background: linear-gradient(135deg, var(--warning-orange) 0%, #e0a800 100%);
-    border: none;
-    color: white;
-    padding: 0.6rem 1.2rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+    background: linear-gradient(135deg,#9f9696 0%,rgb(182, 180, 176) 100%) !important;
+    border: none !important;
+    color: white !important;
 }
-
+.btn-calificar,
+.btn-ver-notas {
+    padding: 0.5rem 1rem !important; 
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important; 
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    transition: all 0.3s ease !important;
+    white-space: nowrap !important;
+}
 .btn-calificar:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
@@ -218,17 +228,9 @@ require_once BASE_PATH . '/views/components/header.php';
 }
 
 .btn-ver-notas {
-    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-blue) 100%);
-    border: none;
-    color: white;
-    padding: 0.6rem 1.2rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+    background: linear-gradient(135deg, #5a73c4 0%, #1e3a5f 100%) !important;
+    border: none !important;
+    color: white !important;
 }
 
 .btn-ver-notas:hover {
@@ -236,7 +238,15 @@ require_once BASE_PATH . '/views/components/header.php';
     box-shadow: 0 4px 12px rgba(90, 115, 196, 0.4);
     color: white;
 }
-
+.ya-calificado {
+    background: #e8f0fe !important;
+    color: #2d4482 !important;
+    padding: 0.5rem 1rem !important; 
+    border-radius: 6px !important;
+    text-align: center !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+}
 .empty-state {
     text-align: center;
     padding: 3rem 2rem;
@@ -554,67 +564,4 @@ require_once BASE_PATH . '/views/components/header.php';
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const modalCalificar = document.getElementById('modalCalificar');
-    const stars = document.querySelectorAll('.star');
-    const puntuacionInput = document.getElementById('puntuacion_input');
-    const btnEnviar = document.getElementById('btn_enviar_calificacion');
-    
-    modalCalificar.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget;
-        const claseId = button.getAttribute('data-clase-id');
-        const claseNombre = button.getAttribute('data-clase-nombre');
-        
-        document.getElementById('modal_clase_id').value = claseId;
-        document.getElementById('modal_clase_nombre').textContent = claseNombre;
-        
-        stars.forEach(star => star.classList.remove('active'));
-        puntuacionInput.value = '';
-        btnEnviar.disabled = true;
-    });
-    
-    stars.forEach(star => {
-        star.addEventListener('click', function() {
-            const rating = parseInt(this.getAttribute('data-value'));
-            puntuacionInput.value = rating;
-            
-            stars.forEach((s, index) => {
-                if (index < rating) {
-                    s.classList.add('active');
-                } else {
-                    s.classList.remove('active');
-                }
-            });
-            
-
-            btnEnviar.disabled = false;
-        });
-        
-        star.addEventListener('mouseover', function() {
-            const rating = parseInt(this.getAttribute('data-value'));
-            stars.forEach((s, index) => {
-                if (index < rating) {
-                    s.style.color = '#ffc107';
-                } else {
-                    s.style.color = '#ddd';
-                }
-            });
-        });
-    });
-    
-    document.querySelector('.rating-stars').addEventListener('mouseleave', function() {
-        const currentRating = parseInt(puntuacionInput.value) || 0;
-        stars.forEach((star, index) => {
-            if (index < currentRating) {
-                star.style.color = '#ffc107';
-            } else {
-                star.style.color = '#ddd';
-            }
-        });
-    });
-});
-</script>
-
 <?php require_once BASE_PATH . '/views/components/footer.php'; ?>

@@ -30,7 +30,7 @@ require_once BASE_PATH . '/views/components/header.php';
         <h3>Verificación de correo</h3>
         <p>Revisa tu correo y escribe el código enviado:</p>
         <input type="text" id="codigoVerificacion" placeholder="Código de 6 dígitos">
-        <button onclick="verificarCodigo()">Verificar</button>
+        <button type="button" onclick="verificarCodigo()">Verificar</button>
     </div>
 </div>
 <?php require_once BASE_PATH . '/views/components/footer.php'; ?>

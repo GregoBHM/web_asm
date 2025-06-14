@@ -719,6 +719,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('cursoSelect:', cursoSelect);
     }
 });
+
 </script>
 
 <?php require_once BASE_PATH . '/views/components/footer.php'; ?>

@@ -25,26 +25,20 @@ class Usuario {
 
     public function registrarUsuario($dni, $nombre, $apellido, $email, $password) {
         try {
-            $this->db->beginTransaction();
-
             $hash = password_hash($password, PASSWORD_DEFAULT);
 
-            $sql = "INSERT INTO USUARIO (DNI, NOMBRE, APELLIDO, EMAIL, PASSWORD) VALUES (?, ?, ?, ?, ?)";
-            $user_id = $this->db->insert($sql, [$dni, $nombre, $apellido, $email, $hash]);
+            $stmt = $this->db->getConnection()->prepare("CALL sp_registrar_usuario(?, ?, ?, ?, ?)");
+            $stmt->execute([$dni, $nombre, $apellido, $email, $hash]);
 
-            $sql = "INSERT INTO ROLES_ASIGNADOS (ID_USUARIO, ID_ROL, FECHA_REG, ESTADO) VALUES (?, 1, NOW(), 1)";
-            $this->db->execute($sql, [$user_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user_id = $result && isset($result['id_usuario']) ? (int)$result['id_usuario'] : false;
+            return $user_id;
 
-            $this->db->commit();
-            return true;
-
-        } catch (Exception $e) {
-            $this->db->rollback();
-            error_log("Error al registrar usuario: " . $e->getMessage());
+        } catch (PDOException $e) {
+            error_log("❌ Error al registrar con SP: " . $e->getMessage());
             return false;
         }
     }
-
     public function buscarPorCorreo($email) {
         $sql = "SELECT U.ID_USUARIO, U.EMAIL, R.ID_ROL, R.NOMBRE AS ROL
                 FROM USUARIO U

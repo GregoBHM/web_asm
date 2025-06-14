@@ -79,8 +79,12 @@ class Database {
             $stmt->execute($params);
             return $stmt;
         } catch (PDOException $e) {
-            error_log("Error en consulta: " . $e->getMessage());
-            throw new Exception("Error al ejecutar la consulta");
+            error_log("ERROR MYSQL: " . $e->getMessage());
+            error_log("CÓDIGO: " . $e->getCode());
+            error_log("SQL: " . $sql);
+            error_log("PARAMS: " . print_r($params, true));
+
+            throw $e;
         }
     }
 
@@ -92,9 +96,24 @@ class Database {
         return $this->query($sql, $params)->fetchAll();
     }
 
+    
     public function insert(string $sql, array $params = []): string {
-        $this->query($sql, $params);
-        return $this->getConnection()->lastInsertId();
+        try {
+            error_log("🔍 DEBUG INSERT - SQL: " . $sql);
+            error_log("🔍 DEBUG INSERT - Params: " . json_encode($params));
+            
+            $this->query($sql, $params);
+            $lastId = $this->getConnection()->lastInsertId();
+            
+            error_log("🔍 DEBUG INSERT - Last Insert ID: " . $lastId);
+            error_log("🔍 DEBUG INSERT - Last Insert ID Type: " . gettype($lastId));
+            
+            return $lastId;
+            
+        } catch (Exception $e) {
+            error_log("🔥 ERROR en insert(): " . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function execute(string $sql, array $params = []): int {

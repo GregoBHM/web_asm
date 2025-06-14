@@ -10,46 +10,44 @@ class ClaseModel {
 
     public function obtenerClasesEstudiante($id_estudiante) {
         $sql = "SELECT 
-                    c.ID_CLASE,
-                    c.HORARIO,
-                    c.ESTADO,
-                    c.FECHA_INICIO,
-                    c.FECHA_FIN,
-                    c.RAZON,
-                    c.CAPACIDAD,
-                    c.FECHA_REG,
-                    cu.CODIGO as CURSO_CODIGO,
-                    cu.NOMBRE as CURSO_NOMBRE,
-                    ci.NOMBRE as CICLO_NOMBRE,
-                    a.NOMBRE as AULA_NOMBRE,
-                    i.FECHA_REG as FECHA_INSCRIPCION,
-                    (SELECT COUNT(*) FROM inscripcion i2 WHERE i2.ID_CLASE = c.ID_CLASE) as INSCRITOS,
-                    CASE 
-                        WHEN c.ESTADO = 0 THEN 'cancelado'
-                        WHEN NOW() < c.FECHA_INICIO THEN 'programado'
-                        WHEN NOW() BETWEEN c.FECHA_INICIO AND c.FECHA_FIN THEN 'activo'
-                        WHEN NOW() > c.FECHA_FIN THEN 'finalizado'
-                        ELSE 'desconocido'
-                    END as ESTADO_TEXTO,
-                    CASE 
-                        WHEN c.ESTADO = 1 AND NOW() > c.FECHA_FIN THEN 1
-                        ELSE 0
-                    END as PUEDE_CALIFICAR,
-                    0 as YA_CALIFICO
-                FROM inscripcion i
-                INNER JOIN clase c ON i.ID_CLASE = c.ID_CLASE
-                INNER JOIN curso cu ON c.ID_CURSO = cu.ID_CURSO
-                INNER JOIN ciclo ci ON cu.ID_CICLO = ci.ID_CICLO
-                LEFT JOIN aula a ON c.ID_AULA = a.ID_AULA
-                WHERE i.ID_ESTUDIANTE = ?
-                ORDER BY 
-                    CASE 
-                        WHEN c.ESTADO = 1 AND NOW() BETWEEN c.FECHA_INICIO AND c.FECHA_FIN THEN 1
-                        WHEN c.ESTADO = 1 AND NOW() < c.FECHA_INICIO THEN 2
-                        WHEN c.ESTADO = 1 AND NOW() > c.FECHA_FIN THEN 3
-                        ELSE 4
-                    END,
-                    c.FECHA_INICIO DESC";
+            c.ID_CLASE,
+            c.HORARIO,
+            c.ESTADO,
+            c.FECHA_INICIO,
+            c.FECHA_FIN,
+            c.RAZON,
+            c.CAPACIDAD,
+            c.FECHA_REG,
+            cu.CODIGO as CURSO_CODIGO,
+            cu.NOMBRE as CURSO_NOMBRE,
+            ci.NOMBRE as CICLO_NOMBRE,
+            i.FECHA_REG as FECHA_INSCRIPCION,
+            (SELECT COUNT(*) FROM inscripcion i2 WHERE i2.ID_CLASE = c.ID_CLASE) as INSCRITOS,
+            CASE 
+                WHEN c.ESTADO = 0 THEN 'cancelado'
+                WHEN NOW() < c.FECHA_INICIO THEN 'programado'
+                WHEN NOW() BETWEEN c.FECHA_INICIO AND c.FECHA_FIN THEN 'activo'
+                WHEN NOW() > c.FECHA_FIN THEN 'finalizado'
+                ELSE 'desconocido'
+            END as ESTADO_TEXTO,
+            CASE 
+                WHEN c.ESTADO = 1 AND NOW() > c.FECHA_FIN THEN 1
+                ELSE 0
+            END as PUEDE_CALIFICAR,
+            0 as YA_CALIFICO
+        FROM inscripcion i
+        INNER JOIN clase c ON i.ID_CLASE = c.ID_CLASE
+        INNER JOIN curso cu ON c.ID_CURSO = cu.ID_CURSO
+        INNER JOIN ciclo ci ON cu.ID_CICLO = ci.ID_CICLO
+        WHERE i.ID_ESTUDIANTE = ?
+        ORDER BY 
+            CASE 
+                WHEN c.ESTADO = 1 AND NOW() BETWEEN c.FECHA_INICIO AND c.FECHA_FIN THEN 1
+                WHEN c.ESTADO = 1 AND NOW() < c.FECHA_INICIO THEN 2
+                WHEN c.ESTADO = 1 AND NOW() > c.FECHA_FIN THEN 3
+                ELSE 4
+            END,
+            c.FECHA_INICIO DESC";
         
         try {
             $clases = $this->db->fetchAll($sql, [$id_estudiante]);
@@ -60,9 +58,9 @@ class ClaseModel {
             
             return $clases;
         } catch (Exception $e) {
-            error_log("Error en obtenerClasesEstudiante: " . $e->getMessage());
-            error_log("SQL: " . $sql);
-            throw new Exception("Error al obtener las clases del estudiante");
+            echo "ERROR SQL REAL: " . $e->getMessage();
+            echo "<br>SQL EJECUTADO: " . $sql;
+            die(); 
         }
     }
 
@@ -137,68 +135,64 @@ class ClaseModel {
 
     public function obtenerClasesDisponiblesParaInscripcion($id_estudiante) {
         $sql = "SELECT 
-                    c.ID_CLASE,
-                    c.HORARIO,
-                    c.ESTADO,
-                    c.FECHA_INICIO,
-                    c.FECHA_FIN,
-                    c.CAPACIDAD,
-                    cu.CODIGO as CURSO_CODIGO,
-                    cu.NOMBRE as CURSO_NOMBRE,
-                    ci.NOMBRE as CICLO_NOMBRE,
-                    COALESCE(a.NOMBRE, 'Virtual') as AULA_NOMBRE,
-                    CONCAT(u.NOMBRE, ' ', u.APELLIDO) as MENTOR_NOMBRE,
-                    (SELECT COUNT(*) FROM inscripcion i WHERE i.ID_CLASE = c.ID_CLASE) as INSCRITOS,
-                    CASE 
-                        WHEN (SELECT COUNT(*) FROM inscripcion i WHERE i.ID_CLASE = c.ID_CLASE) < c.CAPACIDAD 
-                        THEN 1
-                        ELSE 0
-                    END as DISPONIBLE
-                FROM clase c
-                INNER JOIN curso cu ON c.ID_CURSO = cu.ID_CURSO
-                INNER JOIN ciclo ci ON cu.ID_CICLO = ci.ID_CICLO
-                LEFT JOIN aula a ON c.ID_AULA = a.ID_AULA
-                LEFT JOIN registro_academico ra ON c.ID_CLASE = ra.ID_CLASE
-                LEFT JOIN docente d ON ra.ID_DOCENTE = d.ID_DOCENTE
-                LEFT JOIN usuario u ON d.ID_USUARIO = u.ID_USUARIO
-                WHERE c.ESTADO = 1 
-                AND c.FECHA_INICIO > NOW()
-                AND c.ID_CLASE NOT IN (
-                    SELECT i.ID_CLASE 
-                    FROM inscripcion i 
-                    WHERE i.ID_ESTUDIANTE = ?
-                )
-                GROUP BY c.ID_CLASE
-                ORDER BY c.FECHA_INICIO ASC";
+                c.ID_CLASE,
+                c.HORARIO,
+                c.ESTADO,
+                c.FECHA_INICIO,
+                c.FECHA_FIN,
+                c.CAPACIDAD,
+                cu.CODIGO as CURSO_CODIGO,
+                cu.NOMBRE as CURSO_NOMBRE,
+                ci.NOMBRE as CICLO_NOMBRE,
+                CONCAT(u.NOMBRE, ' ', u.APELLIDO) as MENTOR_NOMBRE,
+                (SELECT COUNT(*) FROM inscripcion i WHERE i.ID_CLASE = c.ID_CLASE) as INSCRITOS,
+                CASE 
+                    WHEN (SELECT COUNT(*) FROM inscripcion i WHERE i.ID_CLASE = c.ID_CLASE) < c.CAPACIDAD 
+                    THEN 1
+                    ELSE 0
+                END as DISPONIBLE
+            FROM clase c
+            INNER JOIN curso cu ON c.ID_CURSO = cu.ID_CURSO
+            INNER JOIN ciclo ci ON cu.ID_CICLO = ci.ID_CICLO
+            LEFT JOIN registro_academico ra ON c.ID_CLASE = ra.ID_CLASE
+            LEFT JOIN docente d ON ra.ID_DOCENTE = d.ID_DOCENTE
+            LEFT JOIN usuario u ON d.ID_USUARIO = u.ID_USUARIO
+            WHERE c.ESTADO = 1 
+              AND c.FECHA_INICIO > NOW()
+              AND c.ID_CLASE NOT IN (
+                  SELECT i.ID_CLASE 
+                  FROM inscripcion i 
+                  WHERE i.ID_ESTUDIANTE = ?
+              )
+            GROUP BY c.ID_CLASE
+            ORDER BY c.FECHA_INICIO ASC";
         
         return $this->db->fetchAll($sql, [$id_estudiante]);
     }
 
     public function obtenerClasesDisponibles($filtros = []) {
         $sql = "SELECT 
-                    c.ID_CLASE,
-                    c.HORARIO,
-                    c.ESTADO,
-                    c.FECHA_INICIO,
-                    c.FECHA_FIN,
-                    c.CAPACIDAD,
-                    cu.CODIGO as CURSO_CODIGO,
-                    cu.NOMBRE as CURSO_NOMBRE,
-                    ci.NOMBRE as CICLO_NOMBRE,
-                    COALESCE(a.NOMBRE, 'Virtual') as AULA_NOMBRE,
-                    (SELECT COUNT(*) FROM inscripcion i WHERE i.ID_CLASE = c.ID_CLASE) as INSCRITOS,
-                    CASE 
-                        WHEN (SELECT COUNT(*) FROM inscripcion i WHERE i.ID_CLASE = c.ID_CLASE) < c.CAPACIDAD 
-                        AND c.ESTADO = 1 
-                        AND c.FECHA_INICIO > NOW() 
-                        THEN 1
-                        ELSE 0
-                    END as DISPONIBLE
-                FROM clase c
-                INNER JOIN curso cu ON c.ID_CURSO = cu.ID_CURSO
-                INNER JOIN ciclo ci ON cu.ID_CICLO = ci.ID_CICLO
-                LEFT JOIN aula a ON c.ID_AULA = a.ID_AULA
-                WHERE c.ESTADO = 1 AND c.FECHA_INICIO > NOW()";
+            c.ID_CLASE,
+            c.HORARIO,
+            c.ESTADO,
+            c.FECHA_INICIO,
+            c.FECHA_FIN,
+            c.CAPACIDAD,
+            cu.CODIGO as CURSO_CODIGO,
+            cu.NOMBRE as CURSO_NOMBRE,
+            ci.NOMBRE as CICLO_NOMBRE,
+            (SELECT COUNT(*) FROM inscripcion i WHERE i.ID_CLASE = c.ID_CLASE) as INSCRITOS,
+            CASE 
+                WHEN (SELECT COUNT(*) FROM inscripcion i WHERE i.ID_CLASE = c.ID_CLASE) < c.CAPACIDAD 
+                     AND c.ESTADO = 1 
+                     AND c.FECHA_INICIO > NOW() 
+                THEN 1
+                ELSE 0
+            END as DISPONIBLE
+        FROM clase c
+        INNER JOIN curso cu ON c.ID_CURSO = cu.ID_CURSO
+        INNER JOIN ciclo ci ON cu.ID_CICLO = ci.ID_CICLO
+        WHERE c.ESTADO = 1 AND c.FECHA_INICIO > NOW()";
 
         $params = [];
         
@@ -291,64 +285,21 @@ class ClaseModel {
 
     public function solicitarNuevaClase($id_estudiante, $id_ciclo, $id_curso, $horario_preferido, $razon) {
         try {
-            $this->db->beginTransaction();
-
-            $sql_verificar_limite = "SELECT COUNT(*) as total 
-                                   FROM inscripcion i
-                                   INNER JOIN clase c ON i.ID_CLASE = c.ID_CLASE
-                                   WHERE i.ID_ESTUDIANTE = ? AND c.ESTADO = 1";
-            
-            $limite = $this->db->fetchOne($sql_verificar_limite, [$id_estudiante]);
-            
-            if ($limite['total'] >= 3) {
-                throw new Exception("Ya tienes el máximo de clases permitidas (3)");
-            }
-
-            $sql_verificar_curso = "SELECT COUNT(*) as total FROM curso WHERE ID_CURSO = ? AND ID_CICLO = ?";
-            $curso_valido = $this->db->fetchOne($sql_verificar_curso, [$id_curso, $id_ciclo]);
-            
-            if ($curso_valido['total'] == 0) {
-                throw new Exception("El curso seleccionado no pertenece al ciclo especificado");
-            }
-
-            $sql_verificar_inscripcion = "SELECT COUNT(*) as total 
-                                        FROM inscripcion i
-                                        INNER JOIN clase c ON i.ID_CLASE = c.ID_CLASE
-                                        WHERE i.ID_ESTUDIANTE = ? AND c.ID_CURSO = ? AND c.ESTADO = 1";
-            
-            $ya_inscrito = $this->db->fetchOne($sql_verificar_inscripcion, [$id_estudiante, $id_curso]);
-            
-            if ($ya_inscrito['total'] > 0) {
-                throw new Exception("Ya estás inscrito en una clase de este curso");
-            }
 
             $horarios_map = [
                 'Mañana' => 'Lunes 08:00-10:00',
                 'Tarde' => 'Lunes 14:00-16:00', 
                 'Noche' => 'Lunes 18:00-20:00'
             ];
-            
             $horario_completo = $horarios_map[$horario_preferido] ?? 'Lunes 14:00-16:00';
 
-            $sql_clase = "INSERT INTO clase (
-                HORARIO, ESTADO, FECHA_INICIO, FECHA_FIN, RAZON, CAPACIDAD, FECHA_REG, ID_AULA, ID_CURSO
-            ) VALUES (?, 1, DATE_ADD(NOW(), INTERVAL 7 DAY), DATE_ADD(NOW(), INTERVAL 37 DAY), ?, 30, NOW(), 4, ?)";
-            
-            $id_clase = $this->db->insert($sql_clase, [$horario_completo, $razon, $id_curso]);
+            $sql = "CALL sp_crear_clase_con_inscripcion(?, ?, ?, ?)";
+            $this->db->execute($sql, [$id_estudiante, $id_curso, $horario_completo, $razon]);
 
-            $sql_inscripcion = "INSERT INTO inscripcion (ID_CLASE, ID_ESTUDIANTE, FECHA_REG) VALUES (?, ?, NOW())";
-            $this->db->execute($sql_inscripcion, [$id_clase, $id_estudiante]);
-
-            $sql_registro = "INSERT INTO registro_academico (ID_DOCENTE, ID_ESTUDIANTE, ID_CLASE, ID_UNIDAD, FECHA_REG) 
-                           VALUES (NULL, ?, ?, 1, NOW())";
-            $this->db->execute($sql_registro, [$id_estudiante, $id_clase]);
-
-            $this->db->commit();
             return true;
 
         } catch (Exception $e) {
-            $this->db->rollback();
-            error_log("Error al crear nueva clase: " . $e->getMessage());
+            error_log("Error al ejecutar el procedimiento: " . $e->getMessage());
             throw $e;
         }
     }

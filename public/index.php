@@ -7,10 +7,6 @@ $accion = $_GET['accion'] ?? $_POST['accion'] ?? 'inicio';
 $usuarioId = $_SESSION['usuario_id'] ?? null;
 $rolId = $_SESSION['rol_id'] ?? null;
 
-if ($usuarioId) {
-    include BASE_PATH . '/views/components/nav.php';
-}
-
 $authActions = ['login', 'procesar_login', 'registro', 'procesar_registro', 'cerrar'];
 if (in_array($accion, $authActions)) {
     require_once BASE_PATH . '/controllers/AuthController.php';

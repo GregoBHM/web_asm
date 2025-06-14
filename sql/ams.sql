@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `ciclo` (
   PRIMARY KEY (`ID_CICLO`),
   KEY `ID_SEMESTRE` (`ID_SEMESTRE`),
   CONSTRAINT `ciclo_ibfk_1` FOREIGN KEY (`ID_SEMESTRE`) REFERENCES `semestre_academico` (`ID_SEMESTRE`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla sistema_mentoria.ciclo: ~20 rows (aproximadamente)
 INSERT INTO `ciclo` (`ID_CICLO`, `NOMBRE`, `ID_SEMESTRE`) VALUES
@@ -99,17 +99,17 @@ CREATE TABLE IF NOT EXISTS `clase` (
   `RAZON` varchar(100) DEFAULT NULL,
   `CAPACIDAD` int(11) DEFAULT NULL,
   `FECHA_REG` datetime DEFAULT current_timestamp(),
-  `ID_AULA` int(11) DEFAULT NULL,
   `ID_CURSO` int(11) DEFAULT NULL,
   `ENLACE` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`ID_CLASE`),
-  KEY `ID_AULA` (`ID_AULA`),
   KEY `ID_CURSO` (`ID_CURSO`),
-  CONSTRAINT `clase_ibfk_1` FOREIGN KEY (`ID_AULA`) REFERENCES `aula` (`ID_AULA`),
   CONSTRAINT `clase_ibfk_2` FOREIGN KEY (`ID_CURSO`) REFERENCES `curso` (`ID_CURSO`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.clase: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.clase: ~2 rows (aproximadamente)
+INSERT INTO `clase` (`ID_CLASE`, `HORARIO`, `ESTADO`, `FECHA_INICIO`, `FECHA_FIN`, `RAZON`, `CAPACIDAD`, `FECHA_REG`, `ID_CURSO`, `ENLACE`) VALUES
+	(20, 'Lunes 14:00-16:00', 1, '2025-06-21 01:08:10', '2025-07-21 01:08:10', 'asdadsadadasddasdad', 30, '2025-06-14 01:08:10', 19, NULL),
+	(21, 'Lunes 18:00-20:00', 1, '2025-06-21 01:50:00', '2025-07-21 01:50:00', 'Testeando mano', 30, '2025-06-14 01:50:00', 33, NULL);
 
 -- Volcando estructura para tabla sistema_mentoria.comentario
 CREATE TABLE IF NOT EXISTS `comentario` (
@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS `estudiante` (
   CONSTRAINT `estudiante_ibfk_1` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.estudiante: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.estudiante: ~0 rows (aproximadamente)
 INSERT INTO `estudiante` (`ID_ESTUDIANTE`, `ID_USUARIO`, `CODIGO`, `EMAIL_CORPORATIVO`, `FECHA_REG`, `CONDICION`) VALUES
 	(1, 1, '2022073898', 'gh2022073898@virtual.upt.pe', '2025-06-13 14:55:16', NULL);
 
@@ -242,7 +242,10 @@ CREATE TABLE IF NOT EXISTS `inscripcion` (
   CONSTRAINT `inscripcion_ibfk_2` FOREIGN KEY (`ID_ESTUDIANTE`) REFERENCES `estudiante` (`ID_ESTUDIANTE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.inscripcion: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.inscripcion: ~2 rows (aproximadamente)
+INSERT INTO `inscripcion` (`ID_CLASE`, `ID_ESTUDIANTE`, `FECHA_REG`) VALUES
+	(20, 1, '2025-06-14 01:08:10'),
+	(21, 1, '2025-06-14 01:50:00');
 
 -- Volcando estructura para tabla sistema_mentoria.notas
 CREATE TABLE IF NOT EXISTS `notas` (
@@ -283,7 +286,7 @@ CREATE TABLE IF NOT EXISTS `registro_academico` (
   CONSTRAINT `registro_academico_ibfk_2` FOREIGN KEY (`ID_ESTUDIANTE`) REFERENCES `estudiante` (`ID_ESTUDIANTE`),
   CONSTRAINT `registro_academico_ibfk_3` FOREIGN KEY (`ID_CLASE`) REFERENCES `clase` (`ID_CLASE`),
   CONSTRAINT `registro_academico_ibfk_4` FOREIGN KEY (`ID_UNIDAD`) REFERENCES `unidad` (`ID_UNIDAD`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla sistema_mentoria.registro_academico: ~0 rows (aproximadamente)
 
@@ -313,7 +316,7 @@ CREATE TABLE IF NOT EXISTS `roles_asignados` (
   CONSTRAINT `roles_asignados_ibfk_2` FOREIGN KEY (`ID_ROL`) REFERENCES `rol` (`ID_ROL`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.roles_asignados: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.roles_asignados: ~2 rows (aproximadamente)
 INSERT INTO `roles_asignados` (`ID_USUARIO`, `ID_ROL`, `FECHA_REG`, `ESTADO`) VALUES
 	(1, 2, '2025-05-20 13:46:43', 1),
 	(13, 1, '2025-06-05 14:19:10', 1);
@@ -326,10 +329,79 @@ CREATE TABLE IF NOT EXISTS `semestre_academico` (
   PRIMARY KEY (`ID_SEMESTRE`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.semestre_academico: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.semestre_academico: ~2 rows (aproximadamente)
 INSERT INTO `semestre_academico` (`ID_SEMESTRE`, `CODIGO`, `FECHA`) VALUES
 	(1, '2025-I', '2025-06-13 15:56:01'),
 	(2, '2025-II', '2025-06-13 15:56:01');
+
+-- Volcando estructura para procedimiento sistema_mentoria.sp_crear_clase_con_inscripcion
+DELIMITER //
+CREATE PROCEDURE `sp_crear_clase_con_inscripcion`(
+    IN p_id_estudiante INT,
+    IN p_id_curso INT,
+    IN p_horario VARCHAR(50),
+    IN p_razon TEXT
+)
+BEGIN
+    DECLARE v_id_clase INT;
+
+    START TRANSACTION;
+
+    -- Insertar nueva clase
+    INSERT INTO clase (
+        HORARIO, ESTADO, FECHA_INICIO, FECHA_FIN, RAZON, CAPACIDAD, FECHA_REG, ID_CURSO
+    ) VALUES (
+        p_horario, 1,
+        DATE_ADD(NOW(), INTERVAL 7 DAY),
+        DATE_ADD(NOW(), INTERVAL 37 DAY),
+        p_razon, 30, NOW(), p_id_curso
+    );
+
+    SET v_id_clase = LAST_INSERT_ID();
+
+    -- Insertar inscripción del estudiante
+    INSERT INTO inscripcion (
+        ID_CLASE, ID_ESTUDIANTE, FECHA_REG
+    ) VALUES (
+        v_id_clase, p_id_estudiante, NOW()
+    );
+
+    COMMIT;
+END//
+DELIMITER ;
+
+-- Volcando estructura para procedimiento sistema_mentoria.sp_registrar_usuario
+DELIMITER //
+CREATE PROCEDURE `sp_registrar_usuario`(
+    IN p_dni VARCHAR(8),
+    IN p_nombre VARCHAR(100),
+    IN p_apellido VARCHAR(100),
+    IN p_email VARCHAR(100),
+    IN p_password_hashed TEXT
+)
+BEGIN
+    DECLARE v_user_id INT;
+
+    START TRANSACTION;
+
+    BEGIN
+        INSERT INTO USUARIO (DNI, NOMBRE, APELLIDO, EMAIL, PASSWORD)
+        VALUES (p_dni, p_nombre, p_apellido, p_email, p_password_hashed);
+
+        SET v_user_id = LAST_INSERT_ID();
+
+        IF v_user_id IS NULL OR v_user_id = 0 THEN
+            ROLLBACK;
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = '❌ No se pudo crear el usuario.';
+        END IF;
+
+        INSERT INTO ROLES_ASIGNADOS (ID_USUARIO, ID_ROL, FECHA_REG, ESTADO)
+        VALUES (v_user_id, 1, NOW(), 1);
+
+        COMMIT;
+    END;
+END//
+DELIMITER ;
 
 -- Volcando estructura para tabla sistema_mentoria.unidad
 CREATE TABLE IF NOT EXISTS `unidad` (
@@ -353,9 +425,9 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   PRIMARY KEY (`ID_USUARIO`),
   UNIQUE KEY `DNI` (`DNI`),
   UNIQUE KEY `EMAIL` (`EMAIL`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.usuario: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.usuario: ~2 rows (aproximadamente)
 INSERT INTO `usuario` (`ID_USUARIO`, `DNI`, `NOMBRE`, `APELLIDO`, `EMAIL`, `CELULAR`, `PASSWORD`, `FECHA_REG`) VALUES
 	(1, NULL, 'GREGORY BRANDON', 'HUANCA MERMA', 'gh2022073898@virtual.upt.pe', NULL, NULL, '2025-05-20 12:32:35'),
 	(13, '77436156', 'GREGORY BRANDON', 'HUANCA MERMA', 'sefht7893@gmail.com', NULL, '$2y$10$TAOiROBuzhpx.ApY4eyWbeIx1dcieU1vPb0vjolKm3gK2hwR4Zr/.', '2025-06-05 14:19:10');

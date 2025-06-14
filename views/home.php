@@ -292,7 +292,5 @@
     </section>
 </main>
 
-<!-- FontAwesome para iconos -->
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 <?php include BASE_PATH . '/views/components/footer.php'; ?>
