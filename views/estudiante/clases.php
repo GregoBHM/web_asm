@@ -388,7 +388,7 @@ require_once BASE_PATH . '/views/components/header.php';
                 <p class="text-muted mb-4">
                     Aún no te has inscrito en ninguna clase. ¡Explora las clases disponibles y comienza tu aprendizaje!
                 </p>
-                <a href="<?= BASE_URL ?>/public/index.php?accion=clases_disponibles" class="btn btn-primary btn-lg">
+                <a href="<?= BASE_URL ?>/public/index.php?accion=solicitar" class="btn btn-primary btn-lg">
                     <i class="fas fa-search me-2"></i>
                     Buscar Clases
                 </a>
@@ -469,6 +469,16 @@ require_once BASE_PATH . '/views/components/header.php';
                                         </div>
                                         <div class="info-value">
                                             <?= $clase['INSCRITOS'] ?>/<?= $clase['CAPACIDAD'] ?>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">
+                                            <i class="fas fa-users me-1"></i>
+                                            <?php if (!empty($clase['ENLACE'])): ?>
+                                                <a href="<?= $clase['ENLACE'] ?>" class="text-decoration-none" target="_blank">Link de Clase</a>
+                                            <?php else: ?>
+                                                No hay link disponible
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>

@@ -505,7 +505,6 @@ require_once BASE_PATH . '/views/components/header.php';
                     <i class="fas fa-info-circle me-2"></i>
                     Detalle de la Clase
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body-detail">
                 <div id="detalleContenido"></div>
@@ -518,7 +517,7 @@ require_once BASE_PATH . '/views/components/header.php';
                     <input type="hidden" name="accion" value="inscribir">
                     <input type="hidden" name="id_clase" id="modal_id_clase">
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-check me-2"></i>Confirmar Inscripción
+                        <i class="fas fa-check me-2"></i>Confirmar
                     </button>
                 </form>
             </div>
