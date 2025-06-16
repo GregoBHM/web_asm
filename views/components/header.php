@@ -74,12 +74,12 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
                                 <li><hr class="dropdown-divider"></li>
                             <?php elseif ($_SESSION['rol_id'] === 3): ?>
                                 <li><h6 class="dropdown-header">Panel de Docente</h6></li>
-                                <li><a class="dropdown-item" href="<?= BASE_URL ?>/public/index.php?accion=clases_asignadas">
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>/public/index.php?accion=clases">
                                     <i class="fas fa-chalkboard"></i>Mis Clases</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_URL ?>/public/index.php?accion=crear_clase">
+                                    <i class="fas fa-user-graduate"></i>Tomar Clases</a></li>
                                 <li><a class="dropdown-item" href="<?= BASE_URL ?>/public/index.php?accion=alumnos">
-                                    <i class="fas fa-user-graduate"></i>Mis Alumnos</a></li>
-                                <li><a class="dropdown-item" href="<?= BASE_URL ?>/public/index.php?accion=sesiones">
-                                    <i class="fas fa-calendar-alt"></i>Sesiones</a></li>
+                                    <i class="fas fa-calendar-alt"></i>Mis Sesiones</a></li>
                                 <li><hr class="dropdown-divider"></li>
                             <?php elseif ($_SESSION['rol_id'] === 4): ?>
                                 <li><h6 class="dropdown-header">Panel de Admin</h6></li>

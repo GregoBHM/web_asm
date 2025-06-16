@@ -31,6 +31,29 @@ CREATE TABLE IF NOT EXISTS `administrador` (
 
 -- Volcando datos para la tabla sistema_mentoria.administrador: ~0 rows (aproximadamente)
 
+-- Volcando estructura para tabla sistema_mentoria.alumnos
+CREATE TABLE IF NOT EXISTS `alumnos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `codigo_estudiante` varchar(12) NOT NULL,
+  `nombres` varchar(100) NOT NULL,
+  `apellidos` varchar(100) NOT NULL,
+  `email_institucional` varchar(150) DEFAULT NULL,
+  `carrera` varchar(100) DEFAULT NULL,
+  `semestre` int(11) DEFAULT NULL,
+  `estado` enum('activo','inactivo','graduado','retirado') DEFAULT 'activo',
+  `fecha_ingreso` date DEFAULT NULL,
+  `creado_en` timestamp NOT NULL DEFAULT current_timestamp(),
+  `actualizado_en` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `codigo_estudiante` (`codigo_estudiante`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Volcando datos para la tabla sistema_mentoria.alumnos: ~3 rows (aproximadamente)
+INSERT INTO `alumnos` (`id`, `codigo_estudiante`, `nombres`, `apellidos`, `email_institucional`, `carrera`, `semestre`, `estado`, `fecha_ingreso`, `creado_en`, `actualizado_en`) VALUES
+	(1, '2022073898', 'GREGORY BRANDON', 'HUANCA MERMA', 'gh2022073898@virtual.upt.pe', 'Ingeniería de Sistemas', 7, 'activo', NULL, '2025-06-16 20:02:05', '2025-06-16 21:35:25'),
+	(2, '2020001235', 'María Elena', 'Rodríguez Silva', 'mrodriguez@virtual.upt.pe', 'Ingeniería Civil', 8, 'activo', NULL, '2025-06-16 20:02:05', '2025-06-16 20:02:05'),
+	(3, '2022001236', 'Luis Miguel', 'Fernández Torres', 'lfernandez@virtual.upt.pe', 'Ingeniería Industrial', 4, 'activo', NULL, '2025-06-16 20:02:05', '2025-06-16 20:02:05');
+
 -- Volcando estructura para tabla sistema_mentoria.asistencia
 CREATE TABLE IF NOT EXISTS `asistencia` (
   `ID_ESTUDIANTE` int(11) DEFAULT NULL,
@@ -109,7 +132,20 @@ CREATE TABLE IF NOT EXISTS `clase` (
 -- Volcando datos para la tabla sistema_mentoria.clase: ~2 rows (aproximadamente)
 INSERT INTO `clase` (`ID_CLASE`, `HORARIO`, `ESTADO`, `FECHA_INICIO`, `FECHA_FIN`, `RAZON`, `CAPACIDAD`, `FECHA_REG`, `ID_CURSO`, `ENLACE`) VALUES
 	(20, 'Lunes 14:00-16:00', 1, '2025-06-21 01:08:10', '2025-07-21 01:08:10', 'asdadsadadasddasdad', 30, '2025-06-14 01:08:10', 19, NULL),
-	(21, 'Lunes 18:00-20:00', 1, '2025-06-21 01:50:00', '2025-07-21 01:50:00', 'Testeando mano', 30, '2025-06-14 01:50:00', 33, NULL);
+	(21, 'Lunes 18:00-20:00', 1, '2025-06-15 13:34:54', '2025-06-15 13:39:55', 'Testeando mano', 30, '2025-06-14 01:50:00', 33, NULL);
+
+-- Volcando estructura para tabla sistema_mentoria.codigos_verificacion
+CREATE TABLE IF NOT EXISTS `codigos_verificacion` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `codigo_estudiante` varchar(12) NOT NULL,
+  `codigo_verificacion` varchar(6) NOT NULL,
+  `fecha_expiracion` datetime NOT NULL,
+  `intentos` int(11) DEFAULT 0,
+  `creado_en` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Volcando datos para la tabla sistema_mentoria.codigos_verificacion: ~0 rows (aproximadamente)
 
 -- Volcando estructura para tabla sistema_mentoria.comentario
 CREATE TABLE IF NOT EXISTS `comentario` (
@@ -201,6 +237,24 @@ INSERT INTO `curso` (`ID_CURSO`, `CODIGO`, `NOMBRE`, `ID_CICLO`) VALUES
 	(59, 'SI-085', 'TALLER DE EMPRENDIMIENTO Y LIDERAZGO', 10),
 	(60, 'SI-086', 'GERENCIA DE TECNOLOGIAS DE INFORMACION', 10);
 
+-- Volcando estructura para tabla sistema_mentoria.discord
+CREATE TABLE IF NOT EXISTS `discord` (
+  `ID_CODIGO` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_USUARIO` int(11) NOT NULL,
+  `ID_ESTUDIANTE` int(11) NOT NULL,
+  `KEY` varchar(100) NOT NULL,
+  `ESTADO` tinyint(1) DEFAULT 0,
+  `FECHA_REG` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`ID_CODIGO`),
+  UNIQUE KEY `KEY` (`KEY`),
+  KEY `fk_codigos_usuario` (`ID_USUARIO`),
+  KEY `fk_codigos_estudiante` (`ID_ESTUDIANTE`),
+  CONSTRAINT `fk_codigos_estudiante` FOREIGN KEY (`ID_ESTUDIANTE`) REFERENCES `estudiante` (`ID_ESTUDIANTE`),
+  CONSTRAINT `fk_codigos_usuario` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Volcando datos para la tabla sistema_mentoria.discord: ~0 rows (aproximadamente)
+
 -- Volcando estructura para tabla sistema_mentoria.docente
 CREATE TABLE IF NOT EXISTS `docente` (
   `ID_DOCENTE` int(11) NOT NULL AUTO_INCREMENT,
@@ -223,13 +277,15 @@ CREATE TABLE IF NOT EXISTS `estudiante` (
   `FECHA_REG` datetime DEFAULT current_timestamp(),
   `CONDICION` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`ID_ESTUDIANTE`),
+  UNIQUE KEY `CODIGO` (`CODIGO`),
+  UNIQUE KEY `EMAIL_CORPORATIVO` (`EMAIL_CORPORATIVO`),
   KEY `ID_USUARIO` (`ID_USUARIO`),
   CONSTRAINT `estudiante_ibfk_1` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.estudiante: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.estudiante: ~1 rows (aproximadamente)
 INSERT INTO `estudiante` (`ID_ESTUDIANTE`, `ID_USUARIO`, `CODIGO`, `EMAIL_CORPORATIVO`, `FECHA_REG`, `CONDICION`) VALUES
-	(1, 1, '2022073898', 'gh2022073898@virtual.upt.pe', '2025-06-13 14:55:16', NULL);
+	(3, 1, '2022073898', 'gh2022073898@virtual.upt.pe', '2025-06-16 16:44:51', 'activo');
 
 -- Volcando estructura para tabla sistema_mentoria.inscripcion
 CREATE TABLE IF NOT EXISTS `inscripcion` (
@@ -242,10 +298,9 @@ CREATE TABLE IF NOT EXISTS `inscripcion` (
   CONSTRAINT `inscripcion_ibfk_2` FOREIGN KEY (`ID_ESTUDIANTE`) REFERENCES `estudiante` (`ID_ESTUDIANTE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.inscripcion: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.inscripcion: ~1 rows (aproximadamente)
 INSERT INTO `inscripcion` (`ID_CLASE`, `ID_ESTUDIANTE`, `FECHA_REG`) VALUES
-	(20, 1, '2025-06-14 01:08:10'),
-	(21, 1, '2025-06-14 01:50:00');
+	(20, 3, '2025-06-16 16:52:43');
 
 -- Volcando estructura para tabla sistema_mentoria.notas
 CREATE TABLE IF NOT EXISTS `notas` (
@@ -377,29 +432,65 @@ CREATE PROCEDURE `sp_registrar_usuario`(
     IN p_nombre VARCHAR(100),
     IN p_apellido VARCHAR(100),
     IN p_email VARCHAR(100),
-    IN p_password_hashed TEXT
+    IN p_password_hashed VARCHAR(255)
 )
 BEGIN
     DECLARE v_user_id INT;
 
     START TRANSACTION;
 
-    BEGIN
-        INSERT INTO USUARIO (DNI, NOMBRE, APELLIDO, EMAIL, PASSWORD)
-        VALUES (p_dni, p_nombre, p_apellido, p_email, p_password_hashed);
+    -- Insertar en tabla USUARIO
+    INSERT INTO USUARIO (DNI, NOMBRE, APELLIDO, EMAIL, PASSWORD)
+    VALUES (p_dni, p_nombre, p_apellido, p_email, p_password_hashed);
 
-        SET v_user_id = LAST_INSERT_ID();
+    SET v_user_id = LAST_INSERT_ID();
 
-        IF v_user_id IS NULL OR v_user_id = 0 THEN
-            ROLLBACK;
-            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = '❌ No se pudo crear el usuario.';
-        END IF;
+    -- Verificar si se obtuvo un ID válido
+    IF v_user_id IS NULL OR v_user_id = 0 THEN
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se pudo crear el usuario.';
+    END IF;
 
-        INSERT INTO ROLES_ASIGNADOS (ID_USUARIO, ID_ROL, FECHA_REG, ESTADO)
-        VALUES (v_user_id, 1, NOW(), 1);
+    -- Insertar en tabla ROLES_ASIGNADOS
+    INSERT INTO ROLES_ASIGNADOS (ID_USUARIO, ID_ROL, FECHA_REG, ESTADO)
+    VALUES (v_user_id, 1, NOW(), 1);
 
-        COMMIT;
-    END;
+    COMMIT;
+
+    -- Retornar el ID generado
+    SELECT v_user_id AS id_usuario;
+END//
+DELIMITER ;
+
+-- Volcando estructura para procedimiento sistema_mentoria.sp_registrar_usuario_oauth
+DELIMITER //
+CREATE PROCEDURE `sp_registrar_usuario_oauth`(
+    IN p_nombre VARCHAR(100),
+    IN p_apellido VARCHAR(100),
+    IN p_email VARCHAR(100),
+    OUT p_id_usuario INT
+)
+BEGIN
+    DECLARE v_id_usuario INT;
+
+    START TRANSACTION;
+
+    INSERT INTO USUARIO (NOMBRE, APELLIDO, EMAIL)
+    VALUES (p_nombre, p_apellido, p_email);
+
+    SET v_id_usuario = LAST_INSERT_ID();
+
+    IF v_id_usuario IS NULL OR v_id_usuario = 0 THEN
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error al insertar usuario, ID inválido';
+    END IF;
+
+    INSERT INTO ROLES_ASIGNADOS (ID_USUARIO, ID_ROL, FECHA_REG, ESTADO)
+    VALUES (v_id_usuario, 1, NOW(), 1);
+
+    COMMIT;
+
+    SET p_id_usuario = v_id_usuario;
 END//
 DELIMITER ;
 
@@ -425,7 +516,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   PRIMARY KEY (`ID_USUARIO`),
   UNIQUE KEY `DNI` (`DNI`),
   UNIQUE KEY `EMAIL` (`EMAIL`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla sistema_mentoria.usuario: ~2 rows (aproximadamente)
 INSERT INTO `usuario` (`ID_USUARIO`, `DNI`, `NOMBRE`, `APELLIDO`, `EMAIL`, `CELULAR`, `PASSWORD`, `FECHA_REG`) VALUES

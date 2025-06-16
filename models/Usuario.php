@@ -51,24 +51,22 @@ class Usuario {
 
     public function registrarOAuth($nombre, $apellido, $email) {
         try {
-            $this->db->beginTransaction();
+            error_log("📌 Ejecutando procedimiento almacenado para registrar usuario OAuth");
 
-            $sql = "INSERT INTO USUARIO (NOMBRE, APELLIDO, EMAIL) VALUES (?, ?, ?)";
-            $user_id = $this->db->insert($sql, [$nombre, $apellido, $email]);
-            
-            $sql = "INSERT INTO ROLES_ASIGNADOS (ID_USUARIO, ID_ROL, FECHA_REG, ESTADO) VALUES (?, 1, NOW(), 1)";
-            $this->db->execute($sql, [$user_id]);
+            $stmt = $this->db->getConnection()->prepare("CALL sp_registrar_usuario_oauth(?, ?, ?, @p_id_usuario)");
+            $stmt->execute([$nombre, $apellido, $email]);
 
-            $this->db->commit();
+            $result = $this->db->query("SELECT @p_id_usuario AS id")->fetch(PDO::FETCH_ASSOC);
+            $user_id = $result['id'] ?? 0;
+
+            error_log("✅ Usuario registrado con ID: $user_id");
             return $user_id;
 
         } catch (Exception $e) {
-            $this->db->rollback();
-            error_log("Error al registrar OAuth: " . $e->getMessage());
+            error_log("❌ Error al registrar OAuth: " . $e->getMessage());
             return false;
         }
     }
-
     public function obtenerPorId($id) {
         $sql = "SELECT * FROM usuario WHERE ID_USUARIO = ?";
         return $this->db->fetchOne($sql, [$id]);

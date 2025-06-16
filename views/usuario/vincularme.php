@@ -1,19 +1,17 @@
 <?php
 require_once BASE_PATH . '/views/components/head.php';
 require_once BASE_PATH . '/views/components/header.php';
-
-// Verificar que el usuario esté logueado y sea rol 1 (usuario)
 if (!isset($_SESSION['usuario_id']) || $_SESSION['rol_id'] !== 1) {
     header('Location: ' . BASE_URL . '/public?accion=login');
     exit;
 }
 
-// Variables para el formulario (pueden venir del controlador)
 $mensaje = $_SESSION['mensaje'] ?? '';
 $tipo_mensaje = $_SESSION['tipo_mensaje'] ?? '';
 $error = $_SESSION['error'] ?? '';
+$datos_estudiante = $_SESSION['datos_estudiante'] ?? null;
+$codigo_enviado = $_SESSION['codigo_enviado'] ?? false;
 
-// Limpiar mensajes de sesión
 unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje'], $_SESSION['error']);
 ?>
 
@@ -36,7 +34,7 @@ unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje'], $_SESSION['error']);
     --shadow-md: 0 4px 20px rgba(30, 58, 95, 0.15);
     --shadow-lg: 0 8px 30px rgba(30, 58, 95, 0.2);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --border-radius: 12px;
+    --border-radius: 10px;
 }
 
 body {
@@ -136,12 +134,22 @@ body {
     background: white;
 }
 
+.form-control:read-only {
+    background-color: #f8f9fa;
+    opacity: 1;
+}
+
 .form-floating .form-control {
-    padding-left: 3rem;
+    height: 60px;
+    padding-left: 3rem; 
+    padding-top: 1.5rem; 
+    padding-bottom: 0.5rem; 
+    font-size: 1rem;
+    line-height: 1.2;
 }
 
 .form-floating > label {
-    padding-left: 3rem;
+    padding-left: 5rem;
     color: var(--text-gray);
     font-weight: 500;
 }
@@ -150,6 +158,7 @@ body {
     position: absolute;
     left: 1rem;
     top: 50%;
+    pointer-events: none;
     transform: translateY(-50%);
     color: var(--text-gray);
     font-size: 1.1rem;
@@ -235,6 +244,8 @@ body {
     border: none;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-lg);
+    text-align: center;
+    max-width: 800px;
 }
 
 .modal-header-custom {
@@ -243,7 +254,14 @@ body {
     border-bottom: none;
     padding: 2rem;
 }
-
+.modal-content input[type="text"] {
+    width: 100%;
+    padding: 50px;
+    margin: 5px 0;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
 .modal-header-custom h5 {
     font-weight: 700;
     margin: 0;
@@ -527,7 +545,8 @@ body {
                     </ul>
                 </div>
 
-                <form method="POST" action="<?= BASE_URL ?>/public?accion=iniciar_vinculacion" id="codigoForm">
+                <!-- FORMULARIO MODIFICADO PARA BUSCAR ESTUDIANTE -->
+                <form method="POST" action="<?= BASE_URL ?>/public/index.php?accion=buscar_estudiante" id="codigoForm">
                     <div class="form-floating">
                         <input type="text" 
                                class="form-control" 
@@ -542,15 +561,17 @@ body {
                         <i class="fas fa-id-card input-icon"></i>
                     </div>
 
-                    <button type="submit" class="btn btn-vincular" id="btnIniciar">
-                        <i class="fas fa-arrow-right me-2"></i>
-                        Iniciar Vinculación
+                    <button type="submit" class="btn btn-vincular" id="btnBuscar">
+                        <i class="fas fa-search me-2"></i>
+                        Buscar Estudiante
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<!-- MODAL ACTUALIZADO CON CAMPOS DE SOLO LECTURA -->
 <div class="modal fade" id="validacionModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -559,7 +580,6 @@ body {
                     <i class="fas fa-shield-alt me-2"></i>
                     Validación de Estudiante UPT
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body-custom">
                 <div class="step-indicator">
@@ -572,10 +592,11 @@ body {
                     </div>
                 </div>
 
+                <!-- SECCIÓN 1: CONFIRMAR DATOS (CAMPOS DE SOLO LECTURA) -->
                 <div id="datosSection" class="validation-step">
                     <h4 class="mb-4">Confirma tus datos</h4>
                     
-                    <form method="POST" action="<?= BASE_URL ?>/public?accion=enviar_codigo_vinculacion" id="datosForm">
+                    <form method="POST" action="<?= BASE_URL ?>/public/index.php?accion=enviar_codigo_vinculacion" id="datosForm">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="form-floating">
@@ -594,9 +615,7 @@ body {
                                            class="form-control" 
                                            id="emailInstitucional" 
                                            name="email_institucional"
-                                           placeholder="correo@upt.pe"
-                                           pattern=".*@upt\.pe$"
-                                           required>
+                                           readonly>
                                     <label for="emailInstitucional">Correo Institucional</label>
                                     <i class="fas fa-envelope input-icon"></i>
                                 </div>
@@ -610,9 +629,7 @@ body {
                                            class="form-control" 
                                            id="nombres" 
                                            name="nombres"
-                                           placeholder="Nombres"
-                                           maxlength="50"
-                                           required>
+                                           readonly>
                                     <label for="nombres">Nombres</label>
                                     <i class="fas fa-user input-icon"></i>
                                 </div>
@@ -623,9 +640,7 @@ body {
                                            class="form-control" 
                                            id="apellidos" 
                                            name="apellidos"
-                                           placeholder="Apellidos"
-                                           maxlength="50"
-                                           required>
+                                           readonly>
                                     <label for="apellidos">Apellidos</label>
                                     <i class="fas fa-user input-icon"></i>
                                 </div>
@@ -634,17 +649,17 @@ body {
 
                         <div class="alert alert-info-custom">
                             <i class="fas fa-info-circle me-2"></i>
-                            <strong>Importante:</strong> Usa tu correo institucional de la UPT (ejemplo@upt.pe). 
-                            Se enviará un código de verificación a este correo.
+                            <strong>¿Son correctos tus datos?</strong> Se enviará un código de verificación al correo institucional mostrado.
                         </div>
 
-                        <button type="submit" class="btn btn-vincular" id="btnValidar">
+                        <button type="submit" class="btn btn-vincular" id="btnEnviarCodigo">
                             <i class="fas fa-paper-plane me-2"></i>
                             Enviar Código de Verificación
                         </button>
                     </form>
                 </div>
 
+                <!-- SECCIÓN 2: INGRESAR CÓDIGO DE VERIFICACIÓN -->
                 <div id="codigoSection" class="validation-step code-input-section">
                     <h4 class="mb-4">Ingresa el código de verificación</h4>
                     
@@ -653,8 +668,7 @@ body {
                         Hemos enviado un código de 6 dígitos a <strong id="emailDestino"></strong>
                     </div>
 
-                    <form method="POST" action="<?= BASE_URL ?>/public?accion=verificar_codigo_vinculacion" id="verificacionForm">
-                        <input type="hidden" name="email_institucional" id="emailHidden">
+                    <form method="POST" action="<?= BASE_URL ?>/public/index.php?accion=verificar_codigo_vinculacion" id="verificacionForm">
                         <input type="hidden" name="codigo_estudiante" id="codigoHidden">
                         
                         <div class="code-inputs">
@@ -680,6 +694,7 @@ body {
                     </form>
                 </div>
 
+                <!-- SECCIÓN 3: VINCULACIÓN EXITOSA -->
                 <div id="exitoSection" class="validation-step" style="display: none;">
                     <div class="success-message">
                         <i class="fas fa-check-circle"></i>
@@ -689,7 +704,7 @@ body {
                             <i class="fas fa-graduation-cap me-2"></i>
                             Ahora tienes acceso completo al sistema de mentoría académica.
                         </div>
-                        <a href="<?= BASE_URL ?>/public?accion=dashboard" class="btn btn-vincular">
+                        <a href="<?= BASE_URL ?>/public/index.php?accion=inicio" class="btn btn-vincular">
                             <i class="fas fa-home me-2"></i>
                             Ir al Dashboard
                         </a>
@@ -708,22 +723,40 @@ document.addEventListener('DOMContentLoaded', function() {
     const verificacionForm = document.getElementById('verificacionForm');
     const codeInputs = document.querySelectorAll('.code-digit');
 
-    <?php if (isset($_POST['codigo_estudiante']) && !empty($_POST['codigo_estudiante'])): ?>
-        document.getElementById('codigoConfirm').value = '<?= htmlspecialchars($_POST['codigo_estudiante']) ?>';
+    // Si hay datos del estudiante en la sesión, mostrar el modal con datos prellenados
+    <?php if ($datos_estudiante): ?>
+        // Rellenar datos del estudiante encontrado
+        document.getElementById('codigoConfirm').value = '<?= htmlspecialchars($datos_estudiante['codigo_estudiante']) ?>';
+        document.getElementById('emailInstitucional').value = '<?= htmlspecialchars($datos_estudiante['email_institucional']) ?>';
+        document.getElementById('nombres').value = '<?= htmlspecialchars($datos_estudiante['nombres']) ?>';
+        document.getElementById('apellidos').value = '<?= htmlspecialchars($datos_estudiante['apellidos']) ?>';
+        
+        // Mostrar modal automáticamente
         validacionModal.show();
+        
+        <?php 
+        // Limpiar datos de la sesión después de usarlos
+        unset($_SESSION['datos_estudiante']); 
+        ?>
     <?php endif; ?>
 
-    <?php if (isset($_SESSION['codigo_enviado']) && $_SESSION['codigo_enviado']): ?>
+    // Si se envió el código, activar la segunda sección
+    <?php if ($codigo_enviado): ?>
         activateStep(2);
-        document.getElementById('emailDestino').textContent = '<?= htmlspecialchars($_SESSION['email_destino'] ?? '') ?>';
-        document.getElementById('emailHidden').value = '<?= htmlspecialchars($_SESSION['email_destino'] ?? '') ?>';
-        document.getElementById('codigoHidden').value = '<?= htmlspecialchars($_SESSION['codigo_estudiante'] ?? '') ?>';
+        document.getElementById('emailDestino').textContent = document.getElementById('emailInstitucional').value;
+        document.getElementById('codigoHidden').value = document.getElementById('codigoConfirm').value;
         document.getElementById('codigoSection').classList.add('active');
+        document.getElementById('datosSection').style.display = 'none';
         codeInputs[0].focus();
         validacionModal.show();
-        <?php unset($_SESSION['codigo_enviado'], $_SESSION['email_destino'], $_SESSION['codigo_estudiante']); ?>
+        
+        <?php 
+        // Limpiar flag de la sesión
+        unset($_SESSION['codigo_enviado']); 
+        ?>
     <?php endif; ?>
 
+    // Validación del formulario principal (buscar estudiante)
     codigoForm.addEventListener('submit', function(e) {
         const codigo = document.getElementById('codigoEstudiante').value.trim();
         
@@ -739,33 +772,19 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const btnIniciar = document.getElementById('btnIniciar');
-        btnIniciar.disabled = true;
-        btnIniciar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
+        const btnBuscar = document.getElementById('btnBuscar');
+        btnBuscar.disabled = true;
+        btnBuscar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Buscando...';
     });
 
+    // Validación del formulario de envío de código
     datosForm.addEventListener('submit', function(e) {
-        const email = document.getElementById('emailInstitucional').value.trim();
-        const nombres = document.getElementById('nombres').value.trim();
-        const apellidos = document.getElementById('apellidos').value.trim();
-
-        if (!email.endsWith('@upt.pe')) {
-            e.preventDefault();
-            showAlert('Debes usar tu correo institucional (@upt.pe)');
-            return;
-        }
-
-        if (!nombres || !apellidos) {
-            e.preventDefault();
-            showAlert('Nombres y apellidos son obligatorios');
-            return;
-        }
-
-        const btnValidar = document.getElementById('btnValidar');
-        btnValidar.disabled = true;
-        btnValidar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+        const btnEnviar = document.getElementById('btnEnviarCodigo');
+        btnEnviar.disabled = true;
+        btnEnviar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
     });
 
+    // Validación del formulario de verificación de código
     verificacionForm.addEventListener('submit', function(e) {
         const codigo = Array.from(codeInputs).map(input => input.value).join('');
         
@@ -780,23 +799,27 @@ document.addEventListener('DOMContentLoaded', function() {
         btnVerificar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Verificando...';
     });
 
+    // Funcionalidad mejorada de los inputs de código
     codeInputs.forEach((input, index) => {
         input.addEventListener('input', function(e) {
             const value = e.target.value;
             
+            // Solo permitir números
             if (!/^[0-9]$/.test(value)) {
                 e.target.value = '';
                 return;
             }
-r
+
             e.target.classList.remove('is-invalid');
             
+            // Auto-focus al siguiente input
             if (value && index < codeInputs.length - 1) {
                 codeInputs[index + 1].focus();
             }
         });
 
         input.addEventListener('keydown', function(e) {
+            // Navegación con backspace y flechas
             if (e.key === 'Backspace' && !e.target.value && index > 0) {
                 codeInputs[index - 1].focus();
             }
@@ -809,6 +832,7 @@ r
             }
         });
 
+        // Funcionalidad de pegar código completo
         input.addEventListener('paste', function(e) {
             e.preventDefault();
             const paste = (e.clipboardData || window.clipboardData).getData('text');
@@ -827,24 +851,20 @@ r
         });
     });
 
+    // Botón de reenviar código
     document.getElementById('btnReenviar').addEventListener('click', function() {
-        const email = document.getElementById('emailHidden').value;
         const codigo = document.getElementById('codigoHidden').value;
         
-        if (!email || !codigo) {
+        if (!codigo) {
             showAlert('Error: Datos de sesión perdidos. Recarga la página.');
             return;
         }
 
+        // Crear formulario dinámico para reenviar
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '<?= BASE_URL ?>/public?accion=reenviar_codigo_vinculacion';
         form.style.display = 'none';
-
-        const emailInput = document.createElement('input');
-        emailInput.name = 'email_institucional';
-        emailInput.value = email;
-        form.appendChild(emailInput);
 
         const codigoInput = document.createElement('input');
         codigoInput.name = 'codigo_estudiante';
@@ -855,7 +875,9 @@ r
         form.submit();
     });
 
+    // Función para activar pasos del proceso
     function activateStep(stepNumber) {
+        // Resetear todos los pasos
         document.querySelectorAll('.step').forEach(step => {
             step.classList.remove('active', 'completed');
             step.classList.add('inactive');
@@ -865,6 +887,7 @@ r
             connector.classList.remove('completed');
         });
 
+        // Activar pasos hasta el número especificado
         for (let i = 1; i <= stepNumber; i++) {
             const step = document.getElementById(`step${i}`);
             if (i < stepNumber) {
@@ -875,6 +898,7 @@ r
                 step.classList.add('active');
             }
 
+            // Activar conectores completados
             if (i < stepNumber) {
                 const connector = document.getElementById(`connector${i}`);
                 if (connector) {
@@ -884,6 +908,7 @@ r
         }
     }
 
+    // Función para mostrar alertas personalizadas
     function showAlert(message, type = 'danger') {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
@@ -899,6 +924,7 @@ r
         if (targetContainer) {
             targetContainer.insertBefore(alertDiv, targetContainer.firstChild);
             
+            // Auto-remover alerta después de 5 segundos
             setTimeout(() => {
                 if (alertDiv.parentNode) {
                     alertDiv.remove();
@@ -907,18 +933,9 @@ r
         }
     }
 
-    document.getElementById('emailInstitucional').addEventListener('blur', function() {
-        const email = this.value.trim();
-        if (email && !email.endsWith('@upt.pe')) {
-            this.classList.add('is-invalid');
-            showAlert('El correo debe ser institucional (@upt.pe)', 'warning');
-        } else {
-            this.classList.remove('is-invalid');
-        }
-    });
-
+    // Validación en tiempo real del código de estudiante
     document.getElementById('codigoEstudiante').addEventListener('input', function() {
-        const codigo = this.value.replace(/\D/g, ''); 
+        const codigo = this.value.replace(/\D/g, ''); // Solo números
         this.value = codigo;
         
         if (codigo.length > 0 && (codigo.length < 8 || codigo.length > 12)) {
@@ -928,19 +945,7 @@ r
         }
     });
 
-    ['nombres', 'apellidos'].forEach(fieldId => {
-        document.getElementById(fieldId).addEventListener('input', function() {
-            const value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
-            this.value = value;
-            
-            if (value.length > 0 && value.length < 2) {
-                this.classList.add('is-invalid');
-            } else {
-                this.classList.remove('is-invalid');
-            }
-        });
-    });
-
+    // Auto-remover alertas de éxito después de un tiempo
     const existingAlerts = document.querySelectorAll('.alert:not(.alert-info-custom):not(.alert-success-custom)');
     existingAlerts.forEach(alert => {
         if (alert.classList.contains('alert-success')) {
@@ -953,6 +958,7 @@ r
         }
     });
 
+    // Prevenir múltiples envíos de formularios
     [codigoForm, datosForm, verificacionForm].forEach(form => {
         if (form) {
             form.addEventListener('submit', function() {
@@ -964,6 +970,7 @@ r
         }
     });
 
+    // Manejo de estados especiales desde PHP
     <?php if (isset($_SESSION['vinculacion_exitosa']) && $_SESSION['vinculacion_exitosa']): ?>
         activateStep(3);
         document.getElementById('datosSection').style.display = 'none';
@@ -977,6 +984,7 @@ r
     <?php if (isset($_SESSION['error_verificacion'])): ?>
         activateStep(2);
         document.getElementById('codigoSection').classList.add('active');
+        document.getElementById('datosSection').style.display = 'none';
         codeInputs.forEach(input => {
             input.value = '';
             input.classList.add('is-invalid');
@@ -988,6 +996,7 @@ r
     <?php endif; ?>
 });
 
+// Funciones globales para manejo del modal
 function limpiarFormularios() {
     document.getElementById('codigoEstudiante').value = '';
     document.getElementById('emailInstitucional').value = '';
@@ -1012,7 +1021,9 @@ function cerrarModalVinculacion() {
     limpiarFormularios();
 }
 
+// Event listener para resetear modal al cerrarse
 document.getElementById('validacionModal').addEventListener('hidden.bs.modal', function() {
+    // Resetear indicadores de pasos
     document.querySelectorAll('.step').forEach(step => {
         step.classList.remove('active', 'completed');
         step.classList.add('inactive');
@@ -1020,11 +1031,18 @@ document.getElementById('validacionModal').addEventListener('hidden.bs.modal', f
     document.getElementById('step1').classList.remove('inactive');
     document.getElementById('step1').classList.add('active');
     
+    // Resetear conectores
+    document.querySelectorAll('.step-connector').forEach(connector => {
+        connector.classList.remove('completed');
+    });
+    
+    // Mostrar primera sección y ocultar las demás
     document.getElementById('datosSection').style.display = 'block';
     document.getElementById('codigoSection').style.display = 'block';
     document.getElementById('codigoSection').classList.remove('active');
     document.getElementById('exitoSection').style.display = 'none';
     
+    // Limpiar formularios
     limpiarFormularios();
 });
 </script>

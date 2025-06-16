@@ -24,14 +24,15 @@ class ClaseModel {
             i.FECHA_REG as FECHA_INSCRIPCION,
             (SELECT COUNT(*) FROM inscripcion i2 WHERE i2.ID_CLASE = c.ID_CLASE) as INSCRITOS,
             CASE 
-                WHEN c.ESTADO = 0 THEN 'cancelado'
-                WHEN NOW() < c.FECHA_INICIO THEN 'programado'
-                WHEN NOW() BETWEEN c.FECHA_INICIO AND c.FECHA_FIN THEN 'activo'
-                WHEN NOW() > c.FECHA_FIN THEN 'finalizado'
-                ELSE 'desconocido'
-            END as ESTADO_TEXTO,
+                WHEN c.ESTADO = 1 THEN 'PENDIENTE'
+                WHEN c.ESTADO = 2 THEN 'ACTIVO'
+                WHEN c.ESTADO = 3 THEN 'EN CURSO'
+                WHEN c.ESTADO = 4 THEN 'FINALIZADO'
+                WHEN c.ESTADO = 5 THEN 'CERRADO'
+                ELSE 'DESCONOCIDO'
+            END AS ESTADO_TEXT,
             CASE 
-                WHEN c.ESTADO = 1 AND NOW() > c.FECHA_FIN THEN 1
+                WHEN c.ESTADO = 5 THEN 1
                 ELSE 0
             END as PUEDE_CALIFICAR,
             0 as YA_CALIFICO
@@ -42,10 +43,12 @@ class ClaseModel {
         WHERE i.ID_ESTUDIANTE = ?
         ORDER BY 
             CASE 
-                WHEN c.ESTADO = 1 AND NOW() BETWEEN c.FECHA_INICIO AND c.FECHA_FIN THEN 1
-                WHEN c.ESTADO = 1 AND NOW() < c.FECHA_INICIO THEN 2
-                WHEN c.ESTADO = 1 AND NOW() > c.FECHA_FIN THEN 3
-                ELSE 4
+                WHEN c.ESTADO = 2 THEN 1 
+                WHEN c.ESTADO = 3 THEN 2
+                WHEN c.ESTADO = 1 THEN 3 
+                WHEN c.ESTADO = 4 THEN 4
+                WHEN c.ESTADO = 5 THEN 5 
+                ELSE 6 
             END,
             c.FECHA_INICIO DESC";
         

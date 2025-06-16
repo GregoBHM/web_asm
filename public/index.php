@@ -3,6 +3,19 @@ session_start();
 require_once '../config/constants.php';
 require_once BASE_PATH . '/core/BaseController.php';
 
+$tiempoExpiracion = 900; // 15 minutos
+
+if (isset($_SESSION['ultimo_acceso'])) {
+    $inactividad = time() - $_SESSION['ultimo_acceso'];
+    if ($inactividad > $tiempoExpiracion) {
+        session_unset();
+        session_destroy();
+        header('Location: ' . BASE_URL . '/public?accion=login&reason=timeout');
+        exit;
+    }
+}
+
+$_SESSION['ultimo_acceso'] = time();
 $accion = $_GET['accion'] ?? $_POST['accion'] ?? 'inicio';
 $usuarioId = $_SESSION['usuario_id'] ?? null;
 $rolId = $_SESSION['rol_id'] ?? null;
@@ -30,6 +43,25 @@ if (in_array($accion, $accionesPublicas)) {
 
 if (!$usuarioId || !$rolId) {
     header('Location: ' . BASE_URL . '/public?accion=login');
+    exit;
+}
+$accionesVinculacion = [
+    'vincular',
+    'buscar_estudiante', 
+    'enviar_codigo_vinculacion', 
+    'verificar_codigo_vinculacion', 
+    'reenviar_codigo_vinculacion'
+];
+
+if (in_array($accion, $accionesVinculacion)) {
+    if (!$usuarioId) {
+        header('Location: ' . BASE_URL . '/public?accion=login');
+        exit;
+    }
+    
+    require_once BASE_PATH . '/controllers/EstudianteController.php';
+    $estudiante = new EstudianteController();
+    $estudiante->handle($accion);
     exit;
 }
 

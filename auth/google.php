@@ -34,6 +34,7 @@ if (!isset($_GET['code'])) {
         $_SESSION['rol_id'] = (int) $existe['ID_ROL'];
         $_SESSION['rol_nombre'] = $existe['ROL'];
     } else {
+        error_log("🟡 Usuario no existe en DB. Registrando con Google: {$userInfo->email}");
         $id = $usuario->registrarOAuth($userInfo->givenName, $userInfo->familyName, $userInfo->email);
         $_SESSION['usuario_id'] = $id;
         $_SESSION['rol_id'] = 1; 
