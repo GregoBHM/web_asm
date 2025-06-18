@@ -1,7 +1,7 @@
 -- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Versión del servidor:         10.4.32-MariaDB - mariadb.org binary distribution
--- SO del servidor:              Win64
+-- Host:                         161.132.45.228
+-- Versión del servidor:         10.11.11-MariaDB-0+deb12u1 - Debian 12
+-- SO del servidor:              debian-linux-gnu
 -- HeidiSQL Versión:             12.8.0.6908
 -- --------------------------------------------------------
 
@@ -127,12 +127,13 @@ CREATE TABLE IF NOT EXISTS `clase` (
   PRIMARY KEY (`ID_CLASE`),
   KEY `ID_CURSO` (`ID_CURSO`),
   CONSTRAINT `clase_ibfk_2` FOREIGN KEY (`ID_CURSO`) REFERENCES `curso` (`ID_CURSO`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.clase: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.clase: ~3 rows (aproximadamente)
 INSERT INTO `clase` (`ID_CLASE`, `HORARIO`, `ESTADO`, `FECHA_INICIO`, `FECHA_FIN`, `RAZON`, `CAPACIDAD`, `FECHA_REG`, `ID_CURSO`, `ENLACE`) VALUES
-	(20, 'Lunes 14:00-16:00', 1, '2025-06-21 01:08:10', '2025-07-21 01:08:10', 'asdadsadadasddasdad', 30, '2025-06-14 01:08:10', 19, NULL),
-	(21, 'Lunes 18:00-20:00', 1, '2025-06-15 13:34:54', '2025-06-15 13:39:55', 'Testeando mano', 30, '2025-06-14 01:50:00', 33, NULL);
+	(20, 'Lunes 14:00-16:00', 2, '2025-06-18 14:45:22', '2025-06-18 12:10:04', 'asdadsadadasddasdad', 30, '2025-06-14 01:08:10', 19, 'https://meet.google.com/pfo-iwgk-kea'),
+	(21, 'Lunes 18:00-20:00', 1, '2025-06-15 13:34:54', '2025-06-15 13:39:55', 'Testeando mano', 30, '2025-06-14 01:50:00', 33, ''),
+	(23, 'Lunes 18:00-20:00', 1, '2025-06-25 13:46:12', '2025-07-25 13:46:12', 'Necesito entender Conceptos basicos de calidad\r\n', 30, '2025-06-18 13:46:12', 40, NULL);
 
 -- Volcando estructura para tabla sistema_mentoria.codigos_verificacion
 CREATE TABLE IF NOT EXISTS `codigos_verificacion` (
@@ -264,9 +265,12 @@ CREATE TABLE IF NOT EXISTS `docente` (
   PRIMARY KEY (`ID_DOCENTE`),
   KEY `ID_USUARIO` (`ID_USUARIO`),
   CONSTRAINT `docente_ibfk_1` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.docente: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.docente: ~2 rows (aproximadamente)
+INSERT INTO `docente` (`ID_DOCENTE`, `ID_USUARIO`, `ESTADO`, `FECHA_REG`) VALUES
+	(1, 79, 1, '2025-06-17 16:32:18'),
+	(2, 79, 1, '2025-06-18 08:31:42');
 
 -- Volcando estructura para tabla sistema_mentoria.estudiante
 CREATE TABLE IF NOT EXISTS `estudiante` (
@@ -287,6 +291,19 @@ CREATE TABLE IF NOT EXISTS `estudiante` (
 INSERT INTO `estudiante` (`ID_ESTUDIANTE`, `ID_USUARIO`, `CODIGO`, `EMAIL_CORPORATIVO`, `FECHA_REG`, `CONDICION`) VALUES
 	(3, 1, '2022073898', 'gh2022073898@virtual.upt.pe', '2025-06-16 16:44:51', 'activo');
 
+-- Volcando estructura para evento sistema_mentoria.ev_clase_cambio_a_estado_3
+DELIMITER //
+CREATE EVENT `ev_clase_cambio_a_estado_3` ON SCHEDULE EVERY 1 MINUTE STARTS '2025-06-18 12:53:55' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+  UPDATE clase
+  SET ESTADO = 3,
+      ENLACE = NULL
+  WHERE ESTADO = 2
+    AND FECHA_INICIO IS NOT NULL
+    AND TIMESTAMPDIFF(HOUR, FECHA_INICIO, NOW()) >= 2
+    AND ESTADO <> 5;
+END//
+DELIMITER ;
+
 -- Volcando estructura para tabla sistema_mentoria.inscripcion
 CREATE TABLE IF NOT EXISTS `inscripcion` (
   `ID_CLASE` int(11) DEFAULT NULL,
@@ -298,9 +315,10 @@ CREATE TABLE IF NOT EXISTS `inscripcion` (
   CONSTRAINT `inscripcion_ibfk_2` FOREIGN KEY (`ID_ESTUDIANTE`) REFERENCES `estudiante` (`ID_ESTUDIANTE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.inscripcion: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.inscripcion: ~2 rows (aproximadamente)
 INSERT INTO `inscripcion` (`ID_CLASE`, `ID_ESTUDIANTE`, `FECHA_REG`) VALUES
-	(20, 3, '2025-06-16 16:52:43');
+	(20, 3, '2025-06-16 16:52:43'),
+	(23, 3, '2025-06-18 13:46:12');
 
 -- Volcando estructura para tabla sistema_mentoria.notas
 CREATE TABLE IF NOT EXISTS `notas` (
@@ -341,9 +359,14 @@ CREATE TABLE IF NOT EXISTS `registro_academico` (
   CONSTRAINT `registro_academico_ibfk_2` FOREIGN KEY (`ID_ESTUDIANTE`) REFERENCES `estudiante` (`ID_ESTUDIANTE`),
   CONSTRAINT `registro_academico_ibfk_3` FOREIGN KEY (`ID_CLASE`) REFERENCES `clase` (`ID_CLASE`),
   CONSTRAINT `registro_academico_ibfk_4` FOREIGN KEY (`ID_UNIDAD`) REFERENCES `unidad` (`ID_UNIDAD`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.registro_academico: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.registro_academico: ~4 rows (aproximadamente)
+INSERT INTO `registro_academico` (`ID_REGISTRO`, `ID_DOCENTE`, `ID_ESTUDIANTE`, `ID_CLASE`, `ID_UNIDAD`, `FECHA_REG`) VALUES
+	(3, 1, 3, 20, NULL, '2025-06-17 16:32:29'),
+	(4, 1, NULL, 20, NULL, '2025-06-18 08:31:42'),
+	(5, 1, NULL, 21, NULL, '2025-06-18 08:31:42'),
+	(6, 1, 3, 23, NULL, '2025-06-18 13:46:12');
 
 -- Volcando estructura para tabla sistema_mentoria.rol
 CREATE TABLE IF NOT EXISTS `rol` (
@@ -371,10 +394,11 @@ CREATE TABLE IF NOT EXISTS `roles_asignados` (
   CONSTRAINT `roles_asignados_ibfk_2` FOREIGN KEY (`ID_ROL`) REFERENCES `rol` (`ID_ROL`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.roles_asignados: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.roles_asignados: ~3 rows (aproximadamente)
 INSERT INTO `roles_asignados` (`ID_USUARIO`, `ID_ROL`, `FECHA_REG`, `ESTADO`) VALUES
 	(1, 2, '2025-05-20 13:46:43', 1),
-	(13, 1, '2025-06-05 14:19:10', 1);
+	(13, 1, '2025-06-05 14:19:10', 1),
+	(79, 3, '2025-06-17 15:11:06', 1);
 
 -- Volcando estructura para tabla sistema_mentoria.semestre_academico
 CREATE TABLE IF NOT EXISTS `semestre_academico` (
@@ -392,10 +416,10 @@ INSERT INTO `semestre_academico` (`ID_SEMESTRE`, `CODIGO`, `FECHA`) VALUES
 -- Volcando estructura para procedimiento sistema_mentoria.sp_crear_clase_con_inscripcion
 DELIMITER //
 CREATE PROCEDURE `sp_crear_clase_con_inscripcion`(
-    IN p_id_estudiante INT,
-    IN p_id_curso INT,
-    IN p_horario VARCHAR(50),
-    IN p_razon TEXT
+	IN `p_id_estudiante` INT,
+	IN `p_id_curso` INT,
+	IN `p_horario` VARCHAR(50),
+	IN `p_razon` TEXT
 )
 BEGIN
     DECLARE v_id_clase INT;
@@ -416,6 +440,11 @@ BEGIN
 
     -- Insertar inscripción del estudiante
     INSERT INTO inscripcion (
+        ID_CLASE, ID_ESTUDIANTE, FECHA_REG
+    ) VALUES (
+        v_id_clase, p_id_estudiante, NOW()
+    );
+    INSERT INTO registro_academico (
         ID_CLASE, ID_ESTUDIANTE, FECHA_REG
     ) VALUES (
         v_id_clase, p_id_estudiante, NOW()
@@ -494,6 +523,64 @@ BEGIN
 END//
 DELIMITER ;
 
+-- Volcando estructura para procedimiento sistema_mentoria.sp_tomar_clase
+DELIMITER //
+CREATE PROCEDURE `sp_tomar_clase`(
+    IN p_id_clase INT,
+    IN p_id_docente INT,
+    OUT p_resultado VARCHAR(255),
+    OUT p_success BOOLEAN
+)
+BEGIN
+    DECLARE v_registros_actualizados INT DEFAULT 0;
+    DECLARE v_nombre_curso VARCHAR(150);
+    DECLARE v_codigo_curso VARCHAR(10);
+    
+    -- Handler simplificado para MariaDB
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SET p_success = FALSE;
+        SET p_resultado = 'Error interno del servidor';
+    END;
+
+    START TRANSACTION;
+
+    -- Obtener información del curso
+    SELECT cu.NOMBRE, cu.CODIGO
+    INTO v_nombre_curso, v_codigo_curso
+    FROM clase c
+    INNER JOIN curso cu ON c.ID_CURSO = cu.ID_CURSO
+    WHERE c.ID_CLASE = p_id_clase;
+
+    -- Verificar que la clase existe
+    IF v_nombre_curso IS NULL THEN
+        SET p_success = FALSE;
+        SET p_resultado = 'La clase no existe';
+        ROLLBACK;
+    ELSE
+        -- Actualizar todos los registros académicos de la clase
+        UPDATE registro_academico 
+        SET ID_DOCENTE = p_id_docente 
+        WHERE ID_CLASE = p_id_clase;
+
+        -- Obtener número de registros actualizados
+        SET v_registros_actualizados = ROW_COUNT();
+
+        IF v_registros_actualizados > 0 THEN
+            SET p_success = TRUE;
+            SET p_resultado = CONCAT('Te has convertido en mentor del curso: ', v_codigo_curso, ' - ', v_nombre_curso, ' (', v_registros_actualizados, ' registros actualizados)');
+            COMMIT;
+        ELSE
+            SET p_success = FALSE;
+            SET p_resultado = 'No hay registros académicos para actualizar en esta clase';
+            ROLLBACK;
+        END IF;
+    END IF;
+
+END//
+DELIMITER ;
+
 -- Volcando estructura para tabla sistema_mentoria.unidad
 CREATE TABLE IF NOT EXISTS `unidad` (
   `ID_UNIDAD` int(11) NOT NULL AUTO_INCREMENT,
@@ -516,12 +603,31 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   PRIMARY KEY (`ID_USUARIO`),
   UNIQUE KEY `DNI` (`DNI`),
   UNIQUE KEY `EMAIL` (`EMAIL`)
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.usuario: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.usuario: ~3 rows (aproximadamente)
 INSERT INTO `usuario` (`ID_USUARIO`, `DNI`, `NOMBRE`, `APELLIDO`, `EMAIL`, `CELULAR`, `PASSWORD`, `FECHA_REG`) VALUES
 	(1, NULL, 'GREGORY BRANDON', 'HUANCA MERMA', 'gh2022073898@virtual.upt.pe', NULL, NULL, '2025-05-20 12:32:35'),
-	(13, '77436156', 'GREGORY BRANDON', 'HUANCA MERMA', 'sefht7893@gmail.com', NULL, '$2y$10$TAOiROBuzhpx.ApY4eyWbeIx1dcieU1vPb0vjolKm3gK2hwR4Zr/.', '2025-06-05 14:19:10');
+	(13, '77436156', 'GREGORY BRANDON', 'HUANCA MERMA', 'sefht7893@gmail.com', NULL, '$2y$10$TAOiROBuzhpx.ApY4eyWbeIx1dcieU1vPb0vjolKm3gK2hwR4Zr/.', '2025-06-05 14:19:10'),
+	(79, '71547818', 'LESLIE CLAUDIA', 'HUARACHA TICONA', 'leslieht28@gmail.com', NULL, '$2y$10$4Qr172TB.2LB9dZQRyI.u.UlnjnMiLwTO5HoU1erYueRLszcO2CRO', '2025-06-17 15:11:06');
+
+-- Volcando estructura para disparador sistema_mentoria.tr_clase_enlace_insertado
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER tr_clase_enlace_insertado
+BEFORE UPDATE ON clase
+FOR EACH ROW
+BEGIN
+  -- Solo si el estado actual no es 5
+  IF OLD.ESTADO <> 5 THEN
+    -- Si estaba en estado 1 y se inserta un enlace
+    IF OLD.ESTADO = 1 AND NEW.ENLACE IS NOT NULL AND TRIM(NEW.ENLACE) <> '' THEN
+      SET NEW.ESTADO = 2;
+    END IF;
+  END IF;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

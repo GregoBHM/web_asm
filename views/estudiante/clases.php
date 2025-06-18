@@ -45,6 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     }
 }
 
+$estados_clase = [
+    1 => ['texto' => 'Activa', 'clase' => 'activo'],
+    2 => ['texto' => 'En Proceso', 'clase' => 'proceso'],
+    3 => ['texto' => 'Finalizado', 'clase' => 'finalizado'],
+    5 => ['texto' => 'Cerrado', 'clase' => 'cerrado']
+];
+
 require_once BASE_PATH . '/views/components/head.php';
 require_once BASE_PATH . '/views/components/header.php';
 ?>
@@ -88,12 +95,12 @@ require_once BASE_PATH . '/views/components/header.php';
 .clase-header {
     background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%) !important;
     color: white !important;
-    padding: 1rem 1.5rem !important; /* Reducido el padding vertical */
+    padding: 1rem 1.5rem !important;
     position: relative !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    min-height: 80px !important; /* Altura fija más compacta */
+    min-height: 80px !important;
 }
 
 .clase-header::before {
@@ -106,18 +113,22 @@ require_once BASE_PATH . '/views/components/header.php';
     background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
     transform: rotate(45deg);
 }
+
 .titulo-info {
     display: flex !important;
     flex-direction: column !important;
     gap: 0.25rem !important;
+    z-index: 1;
+    position: relative;
 }
+
 .clase-titulo {
     color: white !important;
-    font-size: 1.2rem !important; /* Ligeramente más pequeño */
+    font-size: 1.2rem !important;
     font-weight: 600 !important;
     margin: 0 !important;
     text-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
-    line-height: 1.2 !important; /* Altura de línea compacta */
+    line-height: 1.2 !important;
 }
 
 .clase-codigo {
@@ -128,28 +139,37 @@ require_once BASE_PATH . '/views/components/header.php';
 }
 
 .estado-badge {
-    position: static !important; /* Cambiar de absolute a static */
+    position: static !important;
     padding: 0.3rem 0.7rem !important;
     border-radius: 15px !important;
     font-size: 0.7rem !important;
     font-weight: 600 !important;
     text-transform: uppercase !important;
     white-space: nowrap !important;
+    z-index: 1;
+    position: relative;
 }
 
+/* Estados del badge */
 .estado-activo {
     background-color: var(--success-green);
     color: white;
     box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
 }
 
-.estado-finalizado {
-    background-color: var(--accent-blue);
+.estado-proceso {
+    background-color: #f59e0b;
     color: white;
-    box-shadow: 0 2px 4px rgba(90, 115, 196, 0.3);
+    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
 }
 
-.estado-cancelado {
+.estado-finalizado {
+    background-color: #3b82f6;
+    color: white;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.estado-cerrado {
     background-color: var(--danger-red);
     color: white;
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
@@ -189,6 +209,23 @@ require_once BASE_PATH . '/views/components/header.php';
     line-height: 1.2 !important;
 }
 
+.link-clase {
+    color: #1e3a5f !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+.link-clase:hover {
+    color: var(--accent-blue) !important;
+    text-decoration: underline !important;
+}
+
+.no-link {
+    color: #6c757d !important;
+    font-style: italic !important;
+}
+
 .acciones-container {
     border-top: 1px solid var(--border-gray);
     padding-top: 1.5rem;
@@ -198,12 +235,9 @@ require_once BASE_PATH . '/views/components/header.php';
 }
 
 .btn-calificar {
-    background: linear-gradient(135deg,#9f9696 0%,rgb(182, 180, 176) 100%) !important;
+    background: linear-gradient(135deg, #9f9696 0%, rgb(182, 180, 176) 100%) !important;
     border: none !important;
     color: white !important;
-}
-.btn-calificar,
-.btn-ver-notas {
     padding: 0.5rem 1rem !important; 
     border-radius: 6px !important;
     font-weight: 600 !important;
@@ -214,30 +248,21 @@ require_once BASE_PATH . '/views/components/header.php';
     gap: 0.4rem !important;
     transition: all 0.3s ease !important;
     white-space: nowrap !important;
+    cursor: pointer !important;
 }
+
 .btn-calificar:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+    box-shadow: 0 4px 12px rgba(159, 150, 150, 0.4);
     color: white;
 }
 
 .btn-calificar:disabled {
-    background: #6c757d;
-    cursor: not-allowed;
-    opacity: 0.6;
+    background: #6c757d !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
 }
 
-.btn-ver-notas {
-    background: linear-gradient(135deg, #5a73c4 0%, #1e3a5f 100%) !important;
-    border: none !important;
-    color: white !important;
-}
-
-.btn-ver-notas:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(90, 115, 196, 0.4);
-    color: white;
-}
 .ya-calificado {
     background: #e8f0fe !important;
     color: #2d4482 !important;
@@ -246,7 +271,11 @@ require_once BASE_PATH . '/views/components/header.php';
     text-align: center !important;
     font-weight: 500 !important;
     font-size: 0.85rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
 }
+
 .empty-state {
     text-align: center;
     padding: 3rem 2rem;
@@ -298,15 +327,6 @@ require_once BASE_PATH . '/views/components/header.php';
     overflow: hidden;
 }
 
-.ya-calificado {
-    background-color: var(--light-blue);
-    color: var(--dark-blue);
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    text-align: center;
-    font-weight: 500;
-}
-
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -348,6 +368,9 @@ require_once BASE_PATH . '/views/components/header.php';
     
     .clase-header {
         padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 }
 </style>
@@ -396,18 +419,23 @@ require_once BASE_PATH . '/views/components/header.php';
         <?php else: ?>
             <div class="row">
                 <?php foreach ($clases as $clase): ?>
+                    <?php 
+                    $estado_actual = $estados_clase[$clase['ESTADO_CLASE']] ?? ['texto' => 'Desconocido', 'clase' => 'cerrado'];
+                    ?>
                     <div class="col-lg-6 col-xl-4">
                         <div class="clase-card">
                             <div class="clase-header">
-                                <div class="estado-badge estado-<?= strtolower($clase['ESTADO_TEXTO']) ?>">
-                                    <?= htmlspecialchars($clase['ESTADO_TEXTO']) ?>
+                                <div class="titulo-info">
+                                    <h4 class="clase-titulo">
+                                        <?= htmlspecialchars($clase['CURSO_NOMBRE']) ?>
+                                    </h4>
+                                    <p class="clase-codigo">
+                                        Código: <?= htmlspecialchars($clase['CURSO_CODIGO']) ?>
+                                    </p>
                                 </div>
-                                <h4 class="clase-titulo">
-                                    <?= htmlspecialchars($clase['CURSO_NOMBRE']) ?>
-                                </h4>
-                                <p class="clase-codigo">
-                                    Código: <?= htmlspecialchars($clase['CURSO_CODIGO']) ?>
-                                </p>
+                                <div class="estado-badge estado-<?= $estado_actual['clase'] ?>">
+                                    <?= $estado_actual['texto'] ?>
+                                </div>
                             </div>
                             
                             <div class="clase-body">
@@ -471,13 +499,24 @@ require_once BASE_PATH . '/views/components/header.php';
                                             <?= $clase['INSCRITOS'] ?>/<?= $clase['CAPACIDAD'] ?>
                                         </div>
                                     </div>
+                                    
                                     <div class="info-item">
                                         <div class="info-label">
-                                            <i class="fas fa-users me-1"></i>
+                                            <i class="fas fa-link me-1"></i>
+                                            Link de Clase
+                                        </div>
+                                        <div class="info-value">
                                             <?php if (!empty($clase['ENLACE'])): ?>
-                                                <a href="<?= $clase['ENLACE'] ?>" class="text-decoration-none" target="_blank">Link de Clase</a>
+                                                <a href="<?= htmlspecialchars($clase['ENLACE']) ?>" 
+                                                   class="link-clase" 
+                                                   target="_blank" 
+                                                   rel="noopener noreferrer"
+                                                   title="Ir a la clase">
+                                                    <i class="fas fa-external-link-alt me-1"></i>
+                                                    Unirse a clase
+                                                </a>
                                             <?php else: ?>
-                                                No hay link disponible
+                                                <span class="no-link">No disponible</span>
                                             <?php endif; ?>
                                         </div>
                                     </div>
@@ -506,12 +545,6 @@ require_once BASE_PATH . '/views/components/header.php';
                                             Clase no finalizada
                                         </button>
                                     <?php endif; ?>
-                                    
-                                    <a href="<?= BASE_URL ?>/public/index.php?accion=notas&clase=<?= $clase['ID_CLASE'] ?>" 
-                                       class="btn-ver-notas">
-                                        <i class="fas fa-chart-bar"></i>
-                                        Ver Notas
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -574,4 +607,66 @@ require_once BASE_PATH . '/views/components/header.php';
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modalCalificar = document.getElementById('modalCalificar');
+    const stars = document.querySelectorAll('.star');
+    const puntuacionInput = document.getElementById('puntuacion_input');
+    const btnEnviar = document.getElementById('btn_enviar_calificacion');
+
+    modalCalificar.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const claseId = button.getAttribute('data-clase-id');
+        const claseNombre = button.getAttribute('data-clase-nombre');
+        
+        document.getElementById('modal_clase_id').value = claseId;
+        document.getElementById('modal_clase_nombre').textContent = claseNombre;
+        
+        stars.forEach(star => star.classList.remove('active'));
+        puntuacionInput.value = '';
+        btnEnviar.disabled = true;
+        document.getElementById('comentario').value = '';
+    });
+
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const value = parseInt(this.getAttribute('data-value'));
+            puntuacionInput.value = value;
+            btnEnviar.disabled = false;
+            
+            stars.forEach((s, index) => {
+                if (index < value) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        });
+        
+        star.addEventListener('mouseenter', function() {
+            const value = parseInt(this.getAttribute('data-value'));
+            stars.forEach((s, index) => {
+                if (index < value) {
+                    s.style.color = '#ffc107';
+                } else {
+                    s.style.color = '#ddd';
+                }
+            });
+        });
+    });
+    
+    document.querySelector('.rating-stars').addEventListener('mouseleave', function() {
+        const currentValue = parseInt(puntuacionInput.value) || 0;
+        stars.forEach((s, index) => {
+            if (index < currentValue) {
+                s.style.color = '#ffc107';
+            } else {
+                s.style.color = '#ddd';
+            }
+        });
+    });
+});
+</script>
+
 <?php require_once BASE_PATH . '/views/components/footer.php'; ?>

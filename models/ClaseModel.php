@@ -8,31 +8,32 @@ class ClaseModel {
         $this->db = Database::getInstance();
     }
 
+    
     public function obtenerClasesEstudiante($id_estudiante) {
         $sql = "SELECT 
             c.ID_CLASE,
             c.HORARIO,
-            c.ESTADO,
+            c.ESTADO AS ESTADO_CLASE,
             c.FECHA_INICIO,
             c.FECHA_FIN,
             c.RAZON,
             c.CAPACIDAD,
             c.FECHA_REG,
+            c.ENLACE,
             cu.CODIGO as CURSO_CODIGO,
             cu.NOMBRE as CURSO_NOMBRE,
             ci.NOMBRE as CICLO_NOMBRE,
             i.FECHA_REG as FECHA_INSCRIPCION,
             (SELECT COUNT(*) FROM inscripcion i2 WHERE i2.ID_CLASE = c.ID_CLASE) as INSCRITOS,
             CASE 
-                WHEN c.ESTADO = 1 THEN 'PENDIENTE'
-                WHEN c.ESTADO = 2 THEN 'ACTIVO'
-                WHEN c.ESTADO = 3 THEN 'EN CURSO'
-                WHEN c.ESTADO = 4 THEN 'FINALIZADO'
-                WHEN c.ESTADO = 5 THEN 'CERRADO'
-                ELSE 'DESCONOCIDO'
-            END AS ESTADO_TEXT,
+                WHEN c.ESTADO = 1 THEN 'Activa'
+                WHEN c.ESTADO = 2 THEN 'En Proceso'
+                WHEN c.ESTADO = 3 THEN 'Finalizado'
+                WHEN c.ESTADO = 5 THEN 'Cerrado'
+                ELSE 'Desconocido'
+            END AS ESTADO_TEXTO,
             CASE 
-                WHEN c.ESTADO = 5 THEN 1
+                WHEN c.ESTADO = 3 OR c.ESTADO = 5 THEN 1
                 ELSE 0
             END as PUEDE_CALIFICAR,
             0 as YA_CALIFICO
@@ -44,11 +45,10 @@ class ClaseModel {
         ORDER BY 
             CASE 
                 WHEN c.ESTADO = 2 THEN 1 
-                WHEN c.ESTADO = 3 THEN 2
-                WHEN c.ESTADO = 1 THEN 3 
-                WHEN c.ESTADO = 4 THEN 4
-                WHEN c.ESTADO = 5 THEN 5 
-                ELSE 6 
+                WHEN c.ESTADO = 1 THEN 2
+                WHEN c.ESTADO = 3 THEN 3 
+                WHEN c.ESTADO = 5 THEN 4
+                ELSE 5 
             END,
             c.FECHA_INICIO DESC";
         
@@ -61,9 +61,9 @@ class ClaseModel {
             
             return $clases;
         } catch (Exception $e) {
-            echo "ERROR SQL REAL: " . $e->getMessage();
-            echo "<br>SQL EJECUTADO: " . $sql;
-            die(); 
+            error_log("ERROR en obtenerClasesEstudiante: " . $e->getMessage());
+            error_log("SQL: " . $sql);
+            return [];
         }
     }
 

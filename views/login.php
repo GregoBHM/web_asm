@@ -21,9 +21,6 @@ require_once BASE_PATH . '/views/components/header.php';
                 <i class="fab fa-google"></i> Continuar con Google
             </button>
         </form>
-        <form action="<?= BASE_URL ?>/auth/microsoft.php" method="post">
-            <button class="microsoft"><i class="fab fa-microsoft"></i> Continuar con Microsoft</button>
-        </form>
     </div>
 </div>
 

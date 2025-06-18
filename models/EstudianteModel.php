@@ -110,10 +110,6 @@ class EstudianteModel {
             ];
         }
     }
-
-    /**
-     * Incrementar contador de intentos
-     */
     private function incrementarIntentos($codigoEstudiante) {
         try {
             $sql = "UPDATE codigos_verificacion 
@@ -126,10 +122,6 @@ class EstudianteModel {
             return false;
         }
     }
-
-    /**
-     * Limpiar código de verificación usado o expirado
-     */
     public function limpiarCodigoVerificacion($codigoEstudiante) {
         try {
             $sql = "DELETE FROM codigos_verificacion WHERE codigo_estudiante = ?";
@@ -139,10 +131,6 @@ class EstudianteModel {
             return false;
         }
     }
-
-    /**
-     * Vincular usuario con datos del estudiante
-     */
     public function vincularUsuario($usuarioId, $datosVinculacion) {
         try {
             $this->db->beginTransaction();
@@ -244,53 +232,13 @@ class EstudianteModel {
                         e.*,
                         u.nombre as usuario_nombre,
                         u.email as usuario_email
-                    FROM estudiantes e
+                    FROM estudiante e
                     INNER JOIN usuarios u ON e.usuario_id = u.id
                     WHERE e.usuario_id = ? AND e.estado = 'activo'";
             
             return $this->db->fetchOne($sql, [$usuarioId]);
         } catch (PDOException $e) {
             error_log("Error en obtenerEstudiantePorUsuario: " . $e->getMessage());
-            return false;
-        }
-    }
-    public function obtenerSolicitudesEstudiante($usuarioId) {
-        try {
-            $sql = "SELECT 
-                        s.id,
-                        s.estado,
-                        s.fecha_solicitud,
-                        s.fecha_respuesta,
-                        c.titulo as clase_titulo,
-                        c.descripcion as clase_descripcion,
-                        c.fecha_clase,
-                        c.hora_inicio,
-                        c.hora_fin,
-                        c.modalidad,
-                        u.nombre as mentor_nombre,
-                        u.email as mentor_email
-                    FROM solicitudes_clase s
-                    INNER JOIN clases c ON s.clase_id = c.id
-                    INNER JOIN usuarios u ON c.mentor_id = u.id
-                    WHERE s.estudiante_id = ? 
-                    ORDER BY s.fecha_solicitud DESC";
-            
-            return $this->db->fetchAll($sql, [$usuarioId]);
-        } catch (PDOException $e) {
-            error_log("Error en obtenerSolicitudesEstudiante: " . $e->getMessage());
-            return [];
-        }
-    }
-
-    public function limpiarCodigosExpirados() {
-        try {
-            $sql = "DELETE FROM codigos_verificacion 
-                    WHERE fecha_expiracion < NOW() 
-                    OR creado_en < DATE_SUB(NOW(), INTERVAL 1 DAY)";
-            
-            return $this->db->execute($sql) > 0;
-        } catch (PDOException $e) {
-            error_log("Error en limpiarCodigosExpirados: " . $e->getMessage());
             return false;
         }
     }

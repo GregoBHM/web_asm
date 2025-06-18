@@ -10,9 +10,9 @@ class Usuario {
 
     public function verificarCredenciales($email, $password) {
         $sql = "SELECT U.ID_USUARIO, U.PASSWORD, R.ID_ROL, R.NOMBRE AS ROL
-                FROM USUARIO U
-                INNER JOIN ROLES_ASIGNADOS RA ON U.ID_USUARIO = RA.ID_USUARIO
-                INNER JOIN ROL R ON RA.ID_ROL = R.ID_ROL
+                FROM usuario U
+                INNER JOIN roles_asignados RA ON U.ID_USUARIO = RA.ID_USUARIO
+                INNER JOIN rol R ON RA.ID_ROL = R.ID_ROL
                 WHERE U.EMAIL = ? LIMIT 1";
         
         $user = $this->db->fetchOne($sql, [$email]);
@@ -41,9 +41,9 @@ class Usuario {
     }
     public function buscarPorCorreo($email) {
         $sql = "SELECT U.ID_USUARIO, U.EMAIL, R.ID_ROL, R.NOMBRE AS ROL
-                FROM USUARIO U
-                JOIN ROLES_ASIGNADOS RA ON RA.ID_USUARIO = U.ID_USUARIO
-                JOIN ROL R ON RA.ID_ROL = R.ID_ROL
+                FROM usuario U
+                JOIN roles_asignados RA ON RA.ID_USUARIO = U.ID_USUARIO
+                JOIN rol R ON RA.ID_ROL = R.ID_ROL
                 WHERE U.EMAIL = ?";
         
         return $this->db->fetchOne($sql, [$email]);
@@ -106,10 +106,10 @@ class Usuario {
                     D.ESTADO as DOCENTE_ESTADO,
                     A.ID_ADMIN,
                     A.NIVEL_ACCESO
-                FROM USUARIO U
-                LEFT JOIN ESTUDIANTE E ON U.ID_USUARIO = E.ID_USUARIO
-                LEFT JOIN DOCENTE D ON U.ID_USUARIO = D.ID_USUARIO
-                LEFT JOIN ADMINISTRADOR A ON U.ID_USUARIO = A.ID_USUARIO
+                FROM usuario U
+                LEFT JOIN estudiante E ON U.ID_USUARIO = E.ID_USUARIO
+                LEFT JOIN docente D ON U.ID_USUARIO = D.ID_USUARIO
+                LEFT JOIN administrador A ON U.ID_USUARIO = A.ID_USUARIO
                 WHERE U.ID_USUARIO = ?";
         
         return $this->db->fetchOne($sql, [$id_usuario]);
@@ -117,8 +117,8 @@ class Usuario {
 
     public function obtenerRolesUsuario($id_usuario) {
         $sql = "SELECT R.ID_ROL, R.NOMBRE, RA.ESTADO
-                FROM ROL R
-                INNER JOIN ROLES_ASIGNADOS RA ON R.ID_ROL = RA.ID_ROL
+                FROM rol R
+                INNER JOIN roles_asignados RA ON R.ID_ROL = RA.ID_ROL
                 WHERE RA.ID_USUARIO = ? AND RA.ESTADO = 1";
         
         return $this->db->fetchAll($sql, [$id_usuario]);
@@ -126,7 +126,7 @@ class Usuario {
 
     public function asignarRol($id_usuario, $id_rol) {
         try {
-            $sql = "INSERT INTO ROLES_ASIGNADOS (ID_USUARIO, ID_ROL, FECHA_REG, ESTADO) VALUES (?, ?, NOW(), 1)";
+            $sql = "INSERT INTO roles_asignados (ID_USUARIO, ID_ROL, FECHA_REG, ESTADO) VALUES (?, ?, NOW(), 1)";
             return $this->db->execute($sql, [$id_usuario, $id_rol]) > 0;
             
         } catch (Exception $e) {
@@ -137,7 +137,7 @@ class Usuario {
 
     public function revocarRol($id_usuario, $id_rol) {
         try {
-            $sql = "UPDATE ROLES_ASIGNADOS SET ESTADO = 0 WHERE ID_USUARIO = ? AND ID_ROL = ?";
+            $sql = "UPDATE roles_asignados SET ESTADO = 0 WHERE ID_USUARIO = ? AND ID_ROL = ?";
             return $this->db->execute($sql, [$id_usuario, $id_rol]) > 0;
             
         } catch (Exception $e) {
@@ -147,13 +147,13 @@ class Usuario {
     }
 
     public function existeEmail($email) {
-        $sql = "SELECT COUNT(*) as total FROM USUARIO WHERE EMAIL = ?";
+        $sql = "SELECT COUNT(*) as total FROM usuario WHERE EMAIL = ?";
         $result = $this->db->fetchOne($sql, [$email]);
         return $result['total'] > 0;
     }
 
     public function existeDNI($dni) {
-        $sql = "SELECT COUNT(*) as total FROM USUARIO WHERE DNI = ?";
+        $sql = "SELECT COUNT(*) as total FROM usuario WHERE DNI = ?";
         $result = $this->db->fetchOne($sql, [$dni]);
         return $result['total'] > 0;
     }
@@ -175,7 +175,7 @@ class Usuario {
             }
             
             $valores[] = $id_usuario;
-            $sql = "UPDATE USUARIO SET " . implode(', ', $campos) . " WHERE ID_USUARIO = ?";
+            $sql = "UPDATE usuario SET " . implode(', ', $campos) . " WHERE ID_USUARIO = ?";
             
             return $this->db->execute($sql, $valores) > 0;
             
@@ -188,9 +188,9 @@ class Usuario {
     public function listarUsuarios($filtros = [], $limite = 50, $offset = 0) {
         $sql = "SELECT U.ID_USUARIO, U.DNI, U.NOMBRE, U.APELLIDO, U.EMAIL, U.CELULAR, U.FECHA_REG,
                        GROUP_CONCAT(R.NOMBRE) as ROLES
-                FROM USUARIO U
-                LEFT JOIN ROLES_ASIGNADOS RA ON U.ID_USUARIO = RA.ID_USUARIO AND RA.ESTADO = 1
-                LEFT JOIN ROL R ON RA.ID_ROL = R.ID_ROL";
+                FROM usuario U
+                LEFT JOIN roles_asignados RA ON U.ID_USUARIO = RA.ID_USUARIO AND RA.ESTADO = 1
+                LEFT JOIN rol R ON RA.ID_ROL = R.ID_ROL";
         
         $params = [];
         $condiciones = [];

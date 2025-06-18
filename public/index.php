@@ -66,15 +66,15 @@ if (in_array($accion, $accionesVinculacion)) {
 }
 
 $mapaAcciones = [
-    'crear_clase' => ['ClaseController', [3, 4]],
-    'listar_clase' => ['ClaseController', [2, 3, 4]],
-    'editar_clase' => ['ClaseController', [3, 4]],
-    'eliminar_clase' => ['ClaseController', [4]],
+    'empezar_clase' => ['DocenteController', [3, 4]],
     'solicitar_clase' => ['ClaseController', [2]],
-    'dashboard' => ['UsuarioController', [1, 2, 3, 4]],
     'mis_clases' => ['EstudianteController', [2]],
     'clases_asignadas' => ['DocenteController', [3]],
-    'gestion_usuarios' => ['AdminController', [4]]
+    'gestion_usuarios' => ['AdminController', [4]],
+    'tomar_clases' => ['DocenteController', [3, 4]],
+    'procesar_tomar_clase' => ['DocenteController', [3, 4]],
+    'info_clase_disponible' => ['DocenteController', [3, 4]],
+    'estadisticas_docente' => ['DocenteController', [3, 4]]
 ];
 
 if (isset($mapaAcciones[$accion])) {
