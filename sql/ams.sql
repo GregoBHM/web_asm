@@ -267,10 +267,9 @@ CREATE TABLE IF NOT EXISTS `docente` (
   CONSTRAINT `docente_ibfk_1` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.docente: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.docente: ~1 rows (aproximadamente)
 INSERT INTO `docente` (`ID_DOCENTE`, `ID_USUARIO`, `ESTADO`, `FECHA_REG`) VALUES
-	(1, 79, 1, '2025-06-17 16:32:18'),
-	(2, 79, 1, '2025-06-18 08:31:42');
+	(1, 79, 1, '2025-06-17 16:32:18');
 
 -- Volcando estructura para tabla sistema_mentoria.estudiante
 CREATE TABLE IF NOT EXISTS `estudiante` (
@@ -394,10 +393,9 @@ CREATE TABLE IF NOT EXISTS `roles_asignados` (
   CONSTRAINT `roles_asignados_ibfk_2` FOREIGN KEY (`ID_ROL`) REFERENCES `rol` (`ID_ROL`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.roles_asignados: ~3 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.roles_asignados: ~2 rows (aproximadamente)
 INSERT INTO `roles_asignados` (`ID_USUARIO`, `ID_ROL`, `FECHA_REG`, `ESTADO`) VALUES
 	(1, 2, '2025-05-20 13:46:43', 1),
-	(13, 1, '2025-06-05 14:19:10', 1),
 	(79, 3, '2025-06-17 15:11:06', 1);
 
 -- Volcando estructura para tabla sistema_mentoria.semestre_academico
@@ -605,11 +603,10 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   UNIQUE KEY `EMAIL` (`EMAIL`)
 ) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla sistema_mentoria.usuario: ~3 rows (aproximadamente)
+-- Volcando datos para la tabla sistema_mentoria.usuario: ~2 rows (aproximadamente)
 INSERT INTO `usuario` (`ID_USUARIO`, `DNI`, `NOMBRE`, `APELLIDO`, `EMAIL`, `CELULAR`, `PASSWORD`, `FECHA_REG`) VALUES
 	(1, NULL, 'GREGORY BRANDON', 'HUANCA MERMA', 'gh2022073898@virtual.upt.pe', NULL, NULL, '2025-05-20 12:32:35'),
-	(13, '77436156', 'GREGORY BRANDON', 'HUANCA MERMA', 'sefht7893@gmail.com', NULL, '$2y$10$TAOiROBuzhpx.ApY4eyWbeIx1dcieU1vPb0vjolKm3gK2hwR4Zr/.', '2025-06-05 14:19:10'),
-	(79, '71547818', 'LESLIE CLAUDIA', 'HUARACHA TICONA', 'leslieht28@gmail.com', NULL, '$2y$10$4Qr172TB.2LB9dZQRyI.u.UlnjnMiLwTO5HoU1erYueRLszcO2CRO', '2025-06-17 15:11:06');
+	(79, '71547818', 'GREGORY BRANDON', 'HUANCA MERMA', 'gbhm2003@gmail.com', NULL, '$2y$10$4Qr172TB.2LB9dZQRyI.u.UlnjnMiLwTO5HoU1erYueRLszcO2CRO', '2025-06-17 15:11:06');
 
 -- Volcando estructura para disparador sistema_mentoria.tr_clase_enlace_insertado
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
