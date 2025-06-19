@@ -70,11 +70,12 @@ $mapaAcciones = [
     'solicitar_clase' => ['ClaseController', [2]],
     'mis_clases' => ['EstudianteController', [2]],
     'clases_asignadas' => ['DocenteController', [3]],
-    'gestion_usuarios' => ['AdminController', [4]],
     'tomar_clases' => ['DocenteController', [3, 4]],
     'procesar_tomar_clase' => ['DocenteController', [3, 4]],
     'info_clase_disponible' => ['DocenteController', [3, 4]],
-    'estadisticas_docente' => ['DocenteController', [3, 4]]
+    'estadisticas_docente' => ['DocenteController', [3, 4]],
+    'alumnos' => ['DocenteController', [3]] ,
+    'reportes' => ['DocenteController', [3]],
 ];
 
 if (isset($mapaAcciones[$accion])) {

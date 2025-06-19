@@ -47,6 +47,9 @@ class DocenteController extends BaseController {
             case 'info_clase_disponible':
                 $this->info_clase_disponible();
                 break;
+                case 'reportes':
+                $this->ver_reportes();
+                break;
             default:
                 http_response_code(404);
                 echo "<h2>Acción no encontrada</h2>";
@@ -494,6 +497,44 @@ class DocenteController extends BaseController {
             echo json_encode(['error' => 'Error interno del servidor']);
         }
     }
+
+    public function ver_reportes() {
+    if (!isset($_SESSION['usuario_id']) || $_SESSION['rol_id'] != 3) {
+        header('Location: ' . BASE_URL . '/public/index.php?accion=login');
+        exit;
+    }
+
+    try {
+        $docente = $this->docenteModel->obtenerIdDocente($_SESSION['usuario_id']);
+        if (!$docente) {
+            throw new Exception("Docente no encontrado");
+        }
+
+        $clases = $this->docenteModel->obtenerClasesAsignadas($docente['ID_DOCENTE']);
+        $resumen = [];
+
+        foreach ($clases as $clase) {
+            $calificaciones = $this->docenteModel->obtenerCalificacionesClase($clase['ID_CLASE'], $_SESSION['usuario_id']);
+            $notas = array_column($calificaciones['calificaciones'], 'CALIFICACION');
+
+            $promedio = count($notas) > 0 ? round(array_sum($notas) / count($notas), 2) : '-';
+
+            $resumen[] = [
+                'curso' => $clase['NOMBRE_CURSO'],
+                'ciclo' => $clase['NOMBRE_CICLO'],
+                'estudiantes' => count($notas),
+                'promedio' => $promedio,
+            ];
+        }
+
+        $pageTitle = "Reportes de Clases";
+        include BASE_PATH . '/views/docente/reportes.php';
+
+    } catch (Exception $e) {
+        echo "<div class='alert alert-danger'>Error al cargar reportes: " . $e->getMessage() . "</div>";
+    }
+}
+
 
     public function __destruct() {
         if ($this->mongoDiscord) {

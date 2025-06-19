@@ -601,6 +601,12 @@ function obtenerIconoBoton($estado_clase) {
                                                 <i class="fas fa-star"></i>
                                                 Calificar
                                             </button>
+                                            <a href="<?= BASE_URL ?>/public/index.php?accion=ver_calificaciones&clase=<?= $clase['ID_CLASE'] ?>" 
+                                                class="btn-accion btn-calificar" 
+                                                title="Ver calificaciones registradas">
+                                                    <i class="fas fa-eye"></i>
+                                                    Ver Calificaciones
+                                                </a>
                                             
                                             <?php if ($clase['ESTADO_CLASE'] == 1): ?>
                                                 <button type="button" 
@@ -1021,7 +1027,46 @@ function calificarEstudiantes(idClase, nombreCurso) {
 }
 
 function guardarCalificaciones() {
-    mostrarNotificacion('info', 'En desarrollo', 'Funcionalidad de calificaciones en desarrollo');
+    const form = document.getElementById('calificarModal');
+    const inputs = form.querySelectorAll('input[name^="calificacion_"]');
+    let errores = 0;
+
+    inputs.forEach(input => {
+        const idEstudiante = input.name.match(/\d+/)[0];
+        const calificacion = input.value;
+        const observacion = prompt(`Observación para el estudiante ${idEstudiante} (opcional):`, "");
+
+        const formData = new FormData();
+        formData.append('id_clase', claseActual);
+        formData.append('id_estudiante', idEstudiante);
+        formData.append('calificacion', calificacion);
+        formData.append('observacion', observacion || '');
+
+        fetch('<?= BASE_URL ?>/public/index.php?accion=calificar_estudiante', {
+            method: 'POST',
+            body: formData
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (!data.success) {
+                errores++;
+                alert(`Error al guardar nota para estudiante ${idEstudiante}: ${data.message}`);
+            }
+        })
+        .catch(() => {
+            errores++;
+            alert(`Error de red con el estudiante ${idEstudiante}`);
+        });
+    });
+
+    setTimeout(() => {
+        if (errores === 0) {
+            alert('✅ Todas las calificaciones se registraron correctamente.');
+            bootstrap.Modal.getInstance(document.getElementById('calificarModal')).hide();
+        } else {
+            alert('⚠️ Algunas calificaciones fallaron. Revisa los mensajes.');
+        }
+    }, 1000);
 }
 </script>
 
