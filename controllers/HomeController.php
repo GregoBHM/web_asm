@@ -1,7 +1,19 @@
 <?php
-class HomeController extends BaseController {
+require_once BASE_PATH . '/core/BaseController.php';
 
-    public function inicioGet() {
+class HomeController extends BaseController
+{
+    public function handle($accion)
+    {
+        if ($accion === 'inicio') {
+            $this->inicioGet();
+        } else {
+            $this->mostrarSeccionGet();
+        }
+    }
+
+    public function inicioGet()
+    {
         $archivo = BASE_PATH . '/views/home.php';
         if (file_exists($archivo)) {
             require $archivo;
@@ -11,7 +23,8 @@ class HomeController extends BaseController {
         }
     }
 
-    public function mostrarSeccionGet() {
+    public function mostrarSeccionGet()
+    {
         $seccionesPermitidas = ['mentoria', 'mentores', 'alumnos', 'anuncios', 'faq', 'testimonios'];
         $seccion = $_GET['accion'] ?? null;
 
@@ -20,7 +33,7 @@ class HomeController extends BaseController {
             return;
         }
 
-        $archivo = BASE_PATH . "/views/$seccion.php";
+        $archivo = BASE_PATH . "/views/{$seccion}.php";
         if (file_exists($archivo)) {
             require $archivo;
         } else {
