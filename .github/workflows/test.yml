@@ -1,0 +1,22 @@
+# .github/workflows/test.yml
+name: Ejecutar Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Instalar Node y dependencias
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - run: npm install
+    - run: npx playwright install
+    - run: npx playwright test --reporter html
