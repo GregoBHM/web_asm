@@ -7,3 +7,6 @@ terraform.tfstate.*
 override.tf
 override.tf.json
 .terraform.lock.hcl
+/coverage
+/infection-log.txt
+/infection-summary.txt
